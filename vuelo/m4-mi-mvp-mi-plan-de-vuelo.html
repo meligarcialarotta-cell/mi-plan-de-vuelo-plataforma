@@ -73,13 +73,23 @@
 
   @media (max-width:480px){ .card{ padding:20px 16px; } h1{ font-size:23px; } .result-grid{ grid-template-columns:1fr; } }
 
-  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
-  .backup-btn{
-    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
-    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
-    font-size:12.5px; font-weight:600; cursor:pointer;
+
+
+  .save-wrap{ text-align:center; margin-top:22px; position:relative; }
+  .btn-save{
+    display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:14px;
+    border:none; background: linear-gradient(90deg, var(--olive), var(--olive-deep));
+    color:#fff; font-family:'Inter',sans-serif; font-weight:700; font-size:15px; cursor:pointer;
+    box-shadow: 0 10px 22px -10px rgba(101,112,63,0.55); transition: transform .15s ease;
   }
-  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+  .btn-save:hover{ transform: translateY(-1px); }
+  .save-toast{
+    display:none; margin-top:10px; font-size:13px; font-weight:600; color:var(--olive-deep);
+  }
+  .save-toast.show{ display:block; animation: fadein .3s ease; }
+  .backup-bar{ display:flex; gap:22px; justify-content:center; margin-top:22px; flex-wrap:wrap; }
+  .backup-item{ max-width:220px; text-align:center; }
+  .backup-desc{ font-size:11px; color:var(--ink-soft); margin:6px 0 0; line-height:1.5; }
 </style>
 </head>
 <body>
@@ -165,10 +175,20 @@
     Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
     <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
   </div>
+  <div class="save-wrap">
+    <button class="btn-save" onclick="manualSave()">💾 Guardar mis avances</button>
+    <div class="save-toast" id="saveToast">✓ Tus respuestas ya quedaron guardadas en este navegador</div>
+  </div>
   <div class="backup-bar">
-    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
-    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
-    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+    <div class="backup-item">
+      <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar</button>
+      <p class="backup-desc">Crea un archivo de respaldo de todo tu progreso. Úsalo solo si vas a cambiar de celular a computador (o viceversa).</p>
+    </div>
+    <div class="backup-item">
+      <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar</button>
+      <p class="backup-desc">Restaura tu progreso desde un archivo de respaldo que ya hayas descargado antes.</p>
+      <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+    </div>
   </div>
 
 </div>
@@ -202,6 +222,15 @@ function uploadProgress(event){
   };
   reader.readAsText(file);
 }
+
+function manualSave(){
+  recalc();
+  const toast = document.getElementById('saveToast');
+  toast.classList.add('show');
+  clearTimeout(window._saveToastTimer);
+  window._saveToastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 2500);
+}
+
 
 const STORAGE_KEY = 'mpv_m4_mvp_v1';
 const simpleFields = ['d_nombre','d_incluye','d_resultado','d_formato','d_tiempo',

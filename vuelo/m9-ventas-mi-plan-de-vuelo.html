@@ -63,13 +63,23 @@
 
   @media (max-width:480px){ .card{ padding:20px 16px; } h1{ font-size:23px; } }
 
-  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
-  .backup-btn{
-    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
-    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
-    font-size:12.5px; font-weight:600; cursor:pointer;
+
+
+  .save-wrap{ text-align:center; margin-top:22px; position:relative; }
+  .btn-save{
+    display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:14px;
+    border:none; background: linear-gradient(90deg, var(--olive), var(--olive-deep));
+    color:#fff; font-family:'Inter',sans-serif; font-weight:700; font-size:15px; cursor:pointer;
+    box-shadow: 0 10px 22px -10px rgba(101,112,63,0.55); transition: transform .15s ease;
   }
-  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+  .btn-save:hover{ transform: translateY(-1px); }
+  .save-toast{
+    display:none; margin-top:10px; font-size:13px; font-weight:600; color:var(--olive-deep);
+  }
+  .save-toast.show{ display:block; animation: fadein .3s ease; }
+  .backup-bar{ display:flex; gap:22px; justify-content:center; margin-top:22px; flex-wrap:wrap; }
+  .backup-item{ max-width:220px; text-align:center; }
+  .backup-desc{ font-size:11px; color:var(--ink-soft); margin:6px 0 0; line-height:1.5; }
 </style>
 </head>
 <body>
@@ -131,10 +141,20 @@
     Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
     <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
   </div>
+  <div class="save-wrap">
+    <button class="btn-save" onclick="manualSave()">💾 Guardar mis avances</button>
+    <div class="save-toast" id="saveToast">✓ Tus respuestas ya quedaron guardadas en este navegador</div>
+  </div>
   <div class="backup-bar">
-    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
-    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
-    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+    <div class="backup-item">
+      <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar</button>
+      <p class="backup-desc">Crea un archivo de respaldo de todo tu progreso. Úsalo solo si vas a cambiar de celular a computador (o viceversa).</p>
+    </div>
+    <div class="backup-item">
+      <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar</button>
+      <p class="backup-desc">Restaura tu progreso desde un archivo de respaldo que ya hayas descargado antes.</p>
+      <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+    </div>
   </div>
 
 </div>
@@ -169,6 +189,15 @@ function uploadProgress(event){
   reader.readAsText(file);
 }
 
+function manualSave(){
+  recalc();
+  const toast = document.getElementById('saveToast');
+  toast.classList.add('show');
+  clearTimeout(window._saveToastTimer);
+  window._saveToastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 2500);
+}
+
+
 const STORAGE_KEY = 'mpv_m9_ventas_v1';
 function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; } }
 function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
@@ -188,15 +217,15 @@ if(!data.p_frase){
 }
 
 const days = [
-  { d:'Día 22', enfoque:'Calentamiento', accion:'PROBLEMA en contenido + 5 WhatsApp directos' },
-  { d:'Día 23', enfoque:'Calentamiento', accion:'Stories de proceso + 5 WhatsApp más' },
-  { d:'Día 24', enfoque:'Contenido clave', accion:'Post de SOLUCIÓN + activa 2 comunidades' },
-  { d:'Día 25', enfoque:'Contenido clave', accion:'Stories testimonio / resultado real + 5 DMs' },
-  { d:'Día 26', enfoque:'Oferta directa', accion:'Post OFERTA completo con precio y CTA claro' },
-  { d:'Día 27', enfoque:'Seguimiento', accion:'Responde TODOS + recordatorio suave a interesadas' },
-  { d:'Día 28', enfoque:'Cierre sem. 1', accion:'Resultado parcial publicado + nueva oferta directa' },
-  { d:'Día 29', enfoque:'Profundización', accion:'Contenido nuevo + DMs de seguimiento pendientes' },
-  { d:'Día 30', enfoque:'🏁 Cierre final', accion:'Urgencia real + cierre + mensaje de agradecimiento' }
+  { d:'Día 22', enfoque:'Calentamiento', accion:'Publica sobre el PROBLEMA que resuelves + escribe por WhatsApp a 5 personas de tu lista' },
+  { d:'Día 23', enfoque:'Calentamiento', accion:'Comparte en tus historias cómo va tu proceso + escribe a 5 personas más por WhatsApp' },
+  { d:'Día 24', enfoque:'Contenido clave', accion:'Publica mostrando tu SOLUCIÓN + participa en tus 2 comunidades o grupos' },
+  { d:'Día 25', enfoque:'Contenido clave', accion:'Comparte en tus historias un testimonio o resultado real + escribe a 5 personas más por WhatsApp' },
+  { d:'Día 26', enfoque:'Oferta directa', accion:'Publica tu OFERTA completa: qué es, para quién, cuánto cuesta y cómo comprar' },
+  { d:'Día 27', enfoque:'Seguimiento', accion:'Responde TODOS los mensajes pendientes + escribe de nuevo, con suavidad, a quienes mostraron interés' },
+  { d:'Día 28', enfoque:'Cierre sem. 1', accion:'Comparte tus resultados de esta primera semana + publica tu oferta una vez más' },
+  { d:'Día 29', enfoque:'Profundización', accion:'Publica contenido nuevo + escribe a las personas interesadas que aún no te han respondido' },
+  { d:'Día 30', enfoque:'🏁 Cierre final', accion:'Publica que el plazo está por cerrar + cierra tus ventas + envía un mensaje de agradecimiento a quienes compraron' }
 ];
 const trackerBody = document.getElementById('trackerBody');
 days.forEach((day, i)=>{
