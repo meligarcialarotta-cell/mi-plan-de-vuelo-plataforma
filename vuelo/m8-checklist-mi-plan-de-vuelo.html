@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M8 · ¿Lista para despegar? · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; } html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 700px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:520px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 26px 24px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:19px; margin:0 0 4px; }
+  .card .sub{ color:var(--ink-soft); font-size:13px; margin: 0 0 16px; line-height:1.5; }
+
+  .check-item{ display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .check-item:last-child{ border-bottom:none; }
+  .check-item input[type=checkbox]{ width:22px; height:22px; margin-top:2px; accent-color:var(--olive); flex-shrink:0; }
+  .check-item .ctext{ flex:1; }
+  .check-item .cmain{ font-size:14.5px; color:var(--ink); }
+  .check-item .cmod{ font-size:11px; color:var(--rose-deep); font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+  .check-item .cauto{ font-size:11.5px; color:var(--olive-deep); margin-top:3px; }
+  .check-item .chow{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
+
+  .progress-bar{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .progress-bar .bar{ flex:1; height:10px; border-radius:8px; background:var(--cream-deep); overflow:hidden; }
+  .progress-bar .fill{ height:100%; background:var(--olive); border-radius:8px; transition:width .3s ease; }
+  .progress-bar .count{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; min-width:56px; text-align:right; }
+
+  .final-banner{ margin-top:16px; padding:18px; border-radius:16px; text-align:center; font-weight:700; font-size:15px; }
+  .final-banner.ready{ background: rgba(124,139,90,0.16); color:var(--olive-deep); }
+  .final-banner.notyet{ background: var(--cream-deep); color:var(--ink-soft); }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){ .card{ padding:20px 16px; } h1{ font-size:23px; } }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Módulo 8 · Mi Plan de Vuelo</p>
+    <h1>¿Lista para despegar?</h1>
+    <p>Confirma que todo está listo antes de dar el paso. Marca cada ítem cuando esté completo de verdad, no "casi".</p>
+  </header>
+
+  <div class="card">
+    <div class="progress-bar">
+      <div class="bar"><div class="fill" id="fillBar" style="width:0%"></div></div>
+      <div class="count" id="countText">0 / 9</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Base construida en semanas 1–3</h2>
+    <p class="sub">Confirma lo que ya trabajaste en los módulos anteriores.</p>
+    <div id="baseList"></div>
+  </div>
+
+  <div class="card">
+    <h2>Ítems operativos para lanzar</h2>
+    <p class="sub">Cosas prácticas que puedes resolver hoy mismo.</p>
+    <div id="opList"></div>
+  </div>
+
+  <div class="final-banner notyet" id="finalBanner">⏳ Completa los ítems restantes</div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_m8_checklist_v1';
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+function getModule(key){ try{ return JSON.parse(localStorage.getItem(key)) || null; }catch(e){ return null; } }
+let data = loadData();
+
+const baseItems = [
+  { id:'chk_m2', text:'Tengo mi idea clara y la explico en una oración.', mod:'M2', check: ()=>{ const m = getModule('mpv_m2_idea_v1'); return !!(m && m.ideaFinal); } },
+  { id:'chk_m3', text:'Sé exactamente a quién le vendo y qué problema resuelvo.', mod:'M3', check: ()=>{ const m = getModule('mpv_m3_cliente_v1'); return !!(m && m.c_nombre && m.c_problema); } },
+  { id:'chk_m4', text:'Mi MVP está definido, creado y ofrecido a personas reales.', mod:'M4', check: ()=>{ const m = getModule('mpv_m4_mvp_v1'); return !!(m && m.d_nombre); } },
+  { id:'chk_m5', text:'Sé cuánto cobrar, cuánto me cuesta y cuánto quiero ganar.', mod:'M5', check: ()=>{ const m = getModule('mpv_m5_finanzas_v1'); return !!(m && parseFloat(m.precioVenta) > 0); } },
+  { id:'chk_m6', text:'Tengo mi Lean Canvas completo (7 bloques).', mod:'M6', check: ()=>{ const m = getModule('mpv_m6_canvas_v1'); return !!(m && m.b1 && m.b2 && m.b3); } },
+  { id:'chk_m7', text:'Tengo al menos 1 bloque de tiempo semanal reservado.', mod:'M7', check: ()=>{ const m = getModule('mpv_m7_tiempo_v1'); return !!(m && (m.v_siesta_tiempo || m.v_manana_tiempo || m.v_noche_tiempo || m.v_finde_tiempo)); } }
+];
+
+const opItems = [
+  { id:'chk_op1', text:'Canal activo para recibir clientes (Instagram, WhatsApp Business, otro)', how:'Actívalo hoy — 10 min' },
+  { id:'chk_op2', text:'Forma de cobrar lista (Nequi, PayPal, Bancolombia…)', how:'Actívalo hoy — 15 min' },
+  { id:'chk_op3', text:'Oferta en 3 líneas: qué es, para quién, cuánto cuesta', how:'Escríbela ahora — 5 min' }
+];
+
+function buildList(container, items, isBase){
+  const el = document.getElementById(container);
+  items.forEach(item=>{
+    const div = document.createElement('div');
+    div.className = 'check-item';
+    const detected = isBase && item.check();
+    div.innerHTML = `
+      <input type="checkbox" id="${item.id}">
+      <div class="ctext">
+        ${item.mod ? `<div class="cmod">${item.mod}</div>` : ''}
+        <div class="cmain">${item.text}</div>
+        ${item.how ? `<div class="chow">${item.how}</div>` : ''}
+        ${isBase ? `<div class="cauto">${detected ? '✓ Detectado en tu progreso guardado' : 'Aún no detectamos datos guardados en ese módulo'}</div>` : ''}
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+buildList('baseList', baseItems, true);
+buildList('opList', opItems, false);
+
+const allIds = [...baseItems.map(i=>i.id), ...opItems.map(i=>i.id)];
+allIds.forEach(id=>{ const el = document.getElementById(id); if(el && data[id] !== undefined) el.checked = data[id]; });
+
+function recalc(){
+  allIds.forEach(id=>{ data[id] = document.getElementById(id).checked; });
+  saveData(data);
+
+  const checkedCount = allIds.filter(id=>document.getElementById(id).checked).length;
+  const pct = Math.round((checkedCount/9)*100);
+  document.getElementById('fillBar').style.width = pct + '%';
+  document.getElementById('countText').textContent = checkedCount + ' / 9';
+
+  const banner = document.getElementById('finalBanner');
+  if(checkedCount >= 9){ banner.textContent = '🚀 Lista para lanzar'; banner.className = 'final-banner ready'; }
+  else { banner.textContent = '⏳ Completa los ítems restantes'; banner.className = 'final-banner notyet'; }
+}
+
+document.addEventListener('change', recalc);
+recalc();
+</script>
+</body>
+</html>

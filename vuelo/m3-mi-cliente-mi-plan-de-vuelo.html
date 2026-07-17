@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M3 · Tu Cliente · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; } html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 680px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:500px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 26px 24px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:18px; margin:0 0 2px; display:flex; align-items:center; gap:8px; }
+  .card h2 .num{ width:24px; height:24px; border-radius:50%; background:var(--lila); color:#fff; font-family:'Inter',sans-serif;
+    font-size:12px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .card .sub{ color:var(--ink-soft); font-size:13px; margin: 4px 0 16px; line-height:1.5; }
+
+  .field-block{ margin-bottom:14px; }
+  .field-block label{ display:block; font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .field-block input[type=text], .field-block textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+  .field-block textarea{ resize:vertical; }
+  input:focus, textarea:focus{ outline:none; border-color: var(--lila-deep); }
+
+  .field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .field-grid{ grid-template-columns:1fr; } }
+
+  .positioning-box{
+    background: var(--cream-deep); border-radius:16px; padding:22px; text-align:center;
+    font-family:'Fraunces',serif; font-size:16.5px; line-height:1.6; color:var(--ink);
+  }
+  .positioning-box .tag{ display:block; font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--rose-deep); font-weight:700; margin-bottom:10px; }
+  .positioning-box .fromM2{ font-family:'Inter',sans-serif; font-size:12px; color:var(--olive-deep); margin-top:10px; }
+
+  .completeness{ display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .completeness .bar{ flex:1; height:8px; border-radius:6px; background:var(--cream-deep); overflow:hidden; }
+  .completeness .fill{ height:100%; background:var(--olive); border-radius:6px; transition:width .3s ease; }
+  .completeness .pct{ font-size:12.5px; font-weight:700; color:var(--olive-deep); min-width:36px; text-align:right; }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){ .card{ padding:20px 16px; } h1{ font-size:23px; } }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Módulo 3 · Mi Plan de Vuelo</p>
+    <h1>Perfil Completo de tu Cliente Ideal</h1>
+    <p>No le vendes a todo el mundo. Necesitas saber exactamente quién es, qué le preocupa, qué sueña y cómo habla.</p>
+  </header>
+
+  <div class="completeness">
+    <div class="bar"><div class="fill" id="fillBar" style="width:0%"></div></div>
+    <div class="pct" id="pctText">0%</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Datos básicos</h2>
+    <p class="sub">Imagina una persona real. Dale un nombre, una edad, una situación de vida.</p>
+    <div class="field-block"><label>Nombre ficticio (dale un nombre real)</label><input type="text" id="c_nombre" placeholder="Ej: Ana"></div>
+    <div class="field-grid">
+      <div class="field-block"><label>Edad aproximada</label><input type="text" id="c_edad" placeholder="Ej: 34 años"></div>
+      <div class="field-block"><label>¿Trabaja actualmente?</label><input type="text" id="c_trabaja" placeholder="Ej: sí, medio tiempo"></div>
+    </div>
+    <div class="field-grid">
+      <div class="field-block"><label>Situación familiar</label><input type="text" id="c_situacion" placeholder="Ej: mamá de 2, casada"></div>
+      <div class="field-block"><label>Ciudad / país</label><input type="text" id="c_ciudad" placeholder="Ej: Bucaramanga, Colombia"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Su problema</h2>
+    <p class="sub">¿Qué le quita el sueño? ¿Qué necesita resolver con urgencia?</p>
+    <div class="field-block"><label>¿Qué problema le quita el sueño?</label><textarea id="c_problema" rows="2"></textarea></div>
+    <div class="field-block"><label>¿Qué ha intentado sin éxito?</label><textarea id="c_intentado" rows="2"></textarea></div>
+    <div class="field-block"><label>¿Qué la frustra más?</label><textarea id="c_frustra" rows="2"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Sus emociones</h2>
+    <p class="sub">Cómo se siente antes y después de encontrar tu solución.</p>
+    <div class="field-block"><label>¿Cómo se siente ANTES de encontrarte?</label><textarea id="c_antes" rows="2"></textarea></div>
+    <div class="field-block"><label>¿Cómo se sentirá DESPUÉS?</label><textarea id="c_despues" rows="2"></textarea></div>
+    <div class="field-block"><label>¿Cuál es su deseo más profundo?</label><textarea id="c_deseo" rows="2"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Su lenguaje</h2>
+    <p class="sub">Las palabras exactas que usa para describir su situación.</p>
+    <div class="field-block"><label>Frases exactas que usa para su problema</label><textarea id="c_frases" rows="2"></textarea></div>
+    <div class="field-block"><label>Palabras clave que busca en Google / Instagram</label><textarea id="c_palabras" rows="2"></textarea></div>
+    <div class="field-block"><label>Objeción más común para no comprar</label><textarea id="c_objecion" rows="2"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span> Tu frase de posicionamiento</h2>
+    <p class="sub">Calculada automáticamente con tus respuestas — y con la idea que guardaste en el Módulo 2.</p>
+    <div class="positioning-box" id="posBox">
+      <span class="tag">Mi posicionamiento</span>
+      Completa el nombre y el problema para ver tu frase aquí.
+    </div>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_m3_cliente_v1';
+const fields = ['c_nombre','c_edad','c_trabaja','c_situacion','c_ciudad','c_problema','c_intentado','c_frustra',
+  'c_antes','c_despues','c_deseo','c_frases','c_palabras','c_objecion'];
+
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+let data = loadData();
+fields.forEach(id=>{ const el = document.getElementById(id); if(el && data[id]) el.value = data[id]; });
+
+function getIdeaFromM2(){
+  try{
+    const m2 = JSON.parse(localStorage.getItem('mpv_m2_idea_v1'));
+    if(m2 && m2.ideaFinal) return m2.ideaFinal;
+  }catch(e){}
+  return null;
+}
+
+function recalc(){
+  fields.forEach(id=>{ const el = document.getElementById(id); if(el) data[id] = el.value; });
+  saveData(data);
+
+  const nombre = document.getElementById('c_nombre').value.trim();
+  const problema = document.getElementById('c_problema').value.trim();
+  const ideaM2 = getIdeaFromM2();
+
+  const box = document.getElementById('posBox');
+  if(nombre || problema){
+    box.innerHTML = `<span class="tag">Mi posicionamiento</span>` +
+      `Ayudo a ${nombre || '[cliente]'} a resolver ${problema ? problema.toLowerCase() : '[problema]'} con ${ideaM2 || '[tu idea]'}.` +
+      (ideaM2 ? `<div class="fromM2">✓ Idea tomada automáticamente de tu Módulo 2</div>` : `<div class="fromM2">Aún no hay una idea guardada en el Módulo 2</div>`);
+  } else {
+    box.innerHTML = `<span class="tag">Mi posicionamiento</span>Completa el nombre y el problema para ver tu frase aquí.`;
+  }
+
+  // Completeness
+  const filled = fields.filter(id => document.getElementById(id).value.trim() !== '').length;
+  const pct = Math.round((filled / fields.length) * 100);
+  document.getElementById('fillBar').style.width = pct + '%';
+  document.getElementById('pctText').textContent = pct + '%';
+}
+
+document.addEventListener('input', recalc);
+recalc();
+</script>
+</body>
+</html>

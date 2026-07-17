@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M1 · Tu Propósito · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 640px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:480px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 28px 26px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:20px; margin:0 0 4px; }
+  .card .sub{ color:var(--ink-soft); font-size:13.5px; margin: 0 0 18px; line-height:1.5; }
+
+  .area-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+  .area-box{ border:1.5px solid var(--line); border-radius:14px; padding:14px 10px; text-align:center; cursor:pointer; background:#fff; transition:.15s; }
+  .area-box:hover{ border-color: var(--lila-deep); }
+  .area-box.selected{ background: rgba(124,139,90,0.12); border-color: var(--olive); }
+  .area-box .emoji{ font-size:22px; }
+  .area-box .name{ font-weight:700; font-size:13px; margin-top:6px; }
+  .area-box .desc{ font-size:11.5px; color:var(--ink-soft); margin-top:4px; line-height:1.4; }
+  @media (max-width:520px){ .area-grid{ grid-template-columns:1fr; } }
+
+  .field-block{ margin-bottom:18px; }
+  .field-block label{ display:block; font-size:14px; font-weight:600; color:var(--ink); margin-bottom:8px; }
+  .field-block textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14.5px; padding:12px 14px;
+    border-radius:12px; border:1.5px solid var(--line); background:#fff; color:var(--ink); resize:vertical;
+  }
+  textarea:focus{ outline:none; border-color: var(--lila-deep); }
+
+  .ancla{
+    background: var(--cream-deep); border-radius:16px; padding:20px; text-align:center;
+    font-family:'Fraunces',serif; font-size:16px; line-height:1.6; color:var(--ink); font-style:italic;
+  }
+  .ancla .tag{ display:block; font-family:'Inter',sans-serif; font-style:normal; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--rose-deep); font-weight:700; margin-bottom:10px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:14px; margin-top:6px; }
+  th{ text-align:left; padding:8px 10px; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); }
+  td{ padding:10px 10px; border-top:1px solid var(--line); }
+  td.hoy{ color:var(--ink-soft); }
+  td.futuro{ color:var(--olive-deep); font-weight:600; }
+  td.arrow{ text-align:center; color:var(--lila-deep); font-weight:700; }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){ .card{ padding:22px 18px; } h1{ font-size:23px; } }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Módulo 1 · Mi Plan de Vuelo</p>
+    <h1>Tu Propósito y Punto de Partida</h1>
+    <p>Antes de despegar, necesitas saber desde dónde vuelas. No busques la respuesta perfecta — busca la honesta.</p>
+  </header>
+
+  <div class="card">
+    <h2>¿Dónde vive tu "por qué"?</h2>
+    <p class="sub">Tu razón más poderosa suele estar en una de estas 3 áreas. Elige la que más resuene contigo.</p>
+    <div class="area-grid" id="areaGrid">
+      <div class="area-box" data-area="Libertad">
+        <div class="emoji">🏠</div><div class="name">Libertad</div>
+        <div class="desc">Decidir tus horarios, estar más con tus hijos, no depender de un sueldo fijo</div>
+      </div>
+      <div class="area-box" data-area="Identidad">
+        <div class="emoji">💜</div><div class="name">Identidad</div>
+        <div class="desc">Ser algo más allá de "mamá de". Recuperar partes de ti en pausa</div>
+      </div>
+      <div class="area-box" data-area="Necesidad económica">
+        <div class="emoji">💰</div><div class="name">Necesidad económica</div>
+        <div class="desc">Aportar ingresos, alcanzar una meta financiera, construir independencia</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Tus 3 respuestas clave</h2>
+    <p class="sub">Escribe con honestidad — esto es solo para ti.</p>
+    <div class="field-block">
+      <label>¿Por qué quiero emprender desde casa?</label>
+      <textarea id="q1" rows="2" placeholder="Escribe tu razón real, sin filtro"></textarea>
+    </div>
+    <div class="field-block">
+      <label>¿Para quién lo hago?</label>
+      <textarea id="q2" rows="2" placeholder="Puede ser para ti misma, tus hijos, tu familia..."></textarea>
+    </div>
+    <div class="field-block">
+      <label>¿Cómo quiero que sea mi vida en 30 días?</label>
+      <textarea id="q3" rows="2" placeholder="Imagina tu día a día si esto funciona"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Tu ancla</h2>
+    <p class="sub">Esta frase te va a sostener cuando las cosas se pongan difíciles. Vuelve a leerla cuando lo necesites.</p>
+    <div class="ancla" id="anclaBox">
+      <span class="tag">Mi propósito</span>
+      Completa tus 3 respuestas arriba para ver tu ancla aquí.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Tu transformación esperada en 30 días</h2>
+    <table>
+      <thead><tr><th>Hoy</th><th></th><th>En 30 días</th></tr></thead>
+      <tbody>
+        <tr><td class="hoy">Idea sin estructura</td><td class="arrow">→</td><td class="futuro">Idea validada y cliente definido</td></tr>
+        <tr><td class="hoy">No sé cuánto cobrar</td><td class="arrow">→</td><td class="futuro">Precio, costos y meta calculados</td></tr>
+        <tr><td class="hoy">El tiempo se va sin avanzar</td><td class="arrow">→</td><td class="futuro">Bloques de 20 min bien usados</td></tr>
+        <tr><td class="hoy">Miedo al fracaso</td><td class="arrow">→</td><td class="futuro">Primeras ventas realizadas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_m1_proposito_v1';
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e){ return {}; } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+let data = loadData();
+
+document.getElementById('q1').value = data.q1 || '';
+document.getElementById('q2').value = data.q2 || '';
+document.getElementById('q3').value = data.q3 || '';
+
+document.querySelectorAll('.area-box').forEach(box=>{
+  if(data.area === box.dataset.area) box.classList.add('selected');
+  box.addEventListener('click', ()=>{
+    document.querySelectorAll('.area-box').forEach(b=>b.classList.remove('selected'));
+    box.classList.add('selected');
+    data.area = box.dataset.area;
+    persist();
+  });
+});
+
+function updateAncla(){
+  const q1 = document.getElementById('q1').value.trim();
+  const q2 = document.getElementById('q2').value.trim();
+  const q3 = document.getElementById('q3').value.trim();
+  const box = document.getElementById('anclaBox');
+  if(q1 || q2 || q3){
+    box.innerHTML = `<span class="tag">Mi propósito</span>` +
+      `Quiero emprender desde casa ${q1 ? 'porque ' + q1.toLowerCase() : '___'}, ` +
+      `pensando en ${q2 || '___'}. ` +
+      `En 30 días quiero que mi vida se vea así: ${q3 || '___'}.`;
+  } else {
+    box.innerHTML = `<span class="tag">Mi propósito</span>Completa tus 3 respuestas arriba para ver tu ancla aquí.`;
+  }
+}
+
+function persist(){
+  data.q1 = document.getElementById('q1').value;
+  data.q2 = document.getElementById('q2').value;
+  data.q3 = document.getElementById('q3').value;
+  saveData(data);
+  updateAncla();
+}
+
+document.getElementById('q1').addEventListener('input', persist);
+document.getElementById('q2').addEventListener('input', persist);
+document.getElementById('q3').addEventListener('input', persist);
+
+updateAncla();
+</script>
+</body>
+</html>

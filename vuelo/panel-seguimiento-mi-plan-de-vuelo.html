@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Seguimiento Post-Lanzamiento · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 780px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:520px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 26px 24px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:19px; margin:0 0 4px; }
+  .card .sub{ color:var(--ink-soft); font-size:13px; margin: 0 0 16px; line-height:1.5; }
+
+  .indicators{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  .ind-box{ background:var(--cream-deep); border-radius:14px; padding:12px 8px; text-align:center; }
+  .ind-box .ilabel{ font-size:10.5px; color:var(--ink-soft); margin-bottom:4px; }
+  .ind-box .ivalue{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; }
+  @media (max-width:640px){ .indicators{ grid-template-columns:repeat(2,1fr); } }
+
+  .week-tabs{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .week-tab{ padding:8px 14px; border-radius:10px; border:1.5px solid var(--line); background:#fff;
+    font-size:13px; font-weight:600; cursor:pointer; color:var(--ink-soft); }
+  .week-tab.active{ background:var(--lila); border-color:var(--lila); color:#fff; }
+
+  .field-block label{ display:block; font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .field-block textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink); resize:vertical; margin-bottom:12px;
+  }
+  textarea:focus{ outline:none; border-color: var(--lila-deep); }
+
+  .readonly-week{ background: var(--cream-deep); border-radius:14px; padding:14px 16px; margin-bottom:16px; }
+  .readonly-week .rw-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .readonly-week .rlabel{ font-size:11px; color:var(--ink-soft); }
+  .readonly-week .rvalue{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; }
+  .readonly-week .rw-note{ font-size:11.5px; color:var(--olive-deep); margin-top:8px; }
+
+  .weekstate{ display:inline-block; margin-top:6px; font-size:12.5px; font-weight:700; padding:4px 10px; border-radius:8px; }
+  .weekstate.on{ background: rgba(124,139,90,0.16); color:var(--olive-deep); }
+  .weekstate.off{ background: rgba(58,46,40,0.08); color:var(--ink-soft); }
+
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; margin-top:4px; }
+  th,td{ padding:8px 6px; text-align:center; border-bottom:1px solid var(--line); }
+  th{ color:var(--ink-soft); font-weight:600; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; }
+  td.wk{ text-align:left; font-weight:600; }
+
+  .checklist{ list-style:none; padding:0; margin:0; }
+  .checklist li{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .checklist li:last-child{ border-bottom:none; }
+  .checklist input[type=checkbox]{ width:18px; height:18px; margin-top:2px; accent-color:var(--olive); flex-shrink:0; }
+
+  .diag-table td, .diag-table th{ text-align:left; }
+  .diag-table td:first-child{ font-weight:600; }
+
+  .escalate-box{ margin-top:14px; padding:14px 16px; border-radius:14px; font-size:14px; font-weight:600; text-align:center; }
+  .escalate-box.ready{ background: rgba(124,139,90,0.16); color:var(--olive-deep); }
+  .escalate-box.notyet{ background: var(--cream-deep); color:var(--ink-soft); }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){
+    .card{ padding:20px 16px; } h1{ font-size:23px; }
+    .indicators, .readonly-week .rw-grid{ grid-template-columns:1fr 1fr; }
+  }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Bono · Módulo 10</p>
+    <h1>Panel de Seguimiento Post-Lanzamiento</h1>
+    <p>Mide lo que importa, ajusta rápido, y sabe cuándo es momento de escalar. Tus números de ventas se toman automáticamente de tu Módulo 9.</p>
+  </header>
+
+  <!-- INDICADORES -->
+  <div class="card">
+    <h2>Tus indicadores clave — en tiempo real</h2>
+    <p class="sub">Calculados con lo que registraste en el Módulo 9 · Ventas.</p>
+    <div class="indicators">
+      <div class="ind-box"><div class="ilabel">💰 Ingresos</div><div class="ivalue" id="iIngresos">$0</div></div>
+      <div class="ind-box"><div class="ilabel">👥 Ventas</div><div class="ivalue" id="iVentas">0</div></div>
+      <div class="ind-box"><div class="ilabel">📈 Conversión</div><div class="ivalue" id="iConversion">0%</div></div>
+      <div class="ind-box"><div class="ilabel">🎯 % Meta</div><div class="ivalue" id="iMeta">—</div></div>
+      <div class="ind-box"><div class="ilabel">⭐ Mejor semana</div><div class="ivalue" id="iMejor">$0</div></div>
+    </div>
+  </div>
+
+  <!-- REVISION SEMANAL (unico de M10) -->
+  <div class="card">
+    <h2>Revisión semanal — 10 minutos cada domingo</h2>
+    <p class="sub">Elige la semana. Tus números de ventas de esa semana aparecen abajo (vienen del Módulo 9).</p>
+    <div class="week-tabs" id="weekTabs"></div>
+
+    <div class="readonly-week">
+      <div class="rw-grid">
+        <div><div class="rlabel">Prospectos</div><div class="rvalue" id="rw_prospectos">0</div></div>
+        <div><div class="rlabel">Ventas</div><div class="rvalue" id="rw_ventas">0</div></div>
+        <div><div class="rlabel">Ingresos</div><div class="rvalue" id="rw_ingresos">$0</div></div>
+      </div>
+      <div class="rw-note" id="rw_note">Aún no hay datos de esta semana en tu Módulo 9.</div>
+      <span class="weekstate off" id="weekStateTag">⏳ Esperando</span>
+    </div>
+
+    <ul class="checklist">
+      <li><input type="checkbox" id="chk1"><span>¿Publiqué al menos 3 veces esta semana?</span></li>
+      <li><input type="checkbox" id="chk2"><span>¿Respondí todos los mensajes en menos de 24h?</span></li>
+      <li><input type="checkbox" id="chk3"><span>¿Hice al menos 1 oferta directa?</span></li>
+    </ul>
+    <div class="field-block" style="margin-top:14px">
+      <label>¿Qué funcionó mejor esta semana?</label>
+      <textarea id="notaFunciono" rows="2" placeholder="Anota el contenido o canal que dio resultado"></textarea>
+    </div>
+    <div class="field-block">
+      <label>¿Qué voy a cambiar la próxima semana?</label>
+      <textarea id="notaCambio" rows="2" placeholder="Ajusta rápido, aprende más rápido"></textarea>
+    </div>
+  </div>
+
+  <!-- EVOLUCION -->
+  <div class="card">
+    <h2>Evolución semanal</h2>
+    <p class="sub">Vista de solo lectura — para registrar tus números, ve al Módulo 9.</p>
+    <table>
+      <thead><tr><th>Semana</th><th>Ventas</th><th>Ingresos ($)</th><th>Conversión</th><th>Estado</th></tr></thead>
+      <tbody id="evolBody"></tbody>
+    </table>
+  </div>
+
+  <!-- PROTOCOLO DE AJUSTE -->
+  <div class="card">
+    <h2>Protocolo de ajuste — qué hacer si algo no funciona</h2>
+    <table class="diag-table">
+      <thead><tr><th>Señal</th><th>Diagnóstico</th><th>Acción inmediata</th></tr></thead>
+      <tbody>
+        <tr><td>Nadie me escribe</td><td>→ Ajusta mensaje</td><td>Empieza con el problema del cliente, no con tu producto</td></tr>
+        <tr><td>Escriben pero no compran</td><td>→ Ajusta oferta</td><td>Simplifica, agrega bono, haz la promesa más específica</td></tr>
+        <tr><td>Dicen "está muy caro"</td><td>→ Ajusta precio</td><td>Crea versión de entrada (alcance menor, precio menor)</td></tr>
+        <tr><td>Poco alcance</td><td>→ Ajusta canal</td><td>WhatsApp Status + grupos de Facebook + colaboraciones locales</td></tr>
+        <tr><td>Visitas sin compras</td><td>→ Construye confianza</td><td>Más testimonios, proceso visible, tu historia real</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CUANDO ESCALAR -->
+  <div class="card">
+    <h2>¿Es momento de escalar?</h2>
+    <p class="sub">No escales antes de cumplir estas 3 condiciones — escalar sin base sólida solo amplifica los problemas.</p>
+    <ul class="checklist">
+      <li><input type="checkbox" id="esc1"><span>Tengo al menos 5 clientes reales que pagaron y quedaron satisfechos</span></li>
+      <li><input type="checkbox" id="esc2"><span>Mi tasa de conversión es mayor al 15%, de forma consistente por 3 semanas</span></li>
+      <li><input type="checkbox" id="esc3"><span>Puedo entregar lo que vendo sin sacrificar tiempo con mis hijos</span></li>
+    </ul>
+    <div class="escalate-box notyet" id="escalateBox">Aún construyendo tu base — sigue registrando tus semanas.</div>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus datos se guardan solo en este navegador y este dispositivo — no se envían a ningún lado.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_seguimiento_v1';
+let currentWeek = 1;
+const totalWeeks = 8;
+
+function loadData(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { weeks: {}, escalate: {} }; }
+  catch(e){ return { weeks: {}, escalate: {} }; }
+}
+function saveData(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function getModule(key){ try{ return JSON.parse(localStorage.getItem(key)) || null; }catch(e){ return null; } }
+function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function money(v){ return '$' + Math.round(v).toLocaleString('es-CO'); }
+
+let data = loadData();
+
+function buildWeekTabs(){
+  const el = document.getElementById('weekTabs');
+  el.innerHTML = '';
+  for(let i=1;i<=totalWeeks;i++){
+    const tab = document.createElement('div');
+    tab.className = 'week-tab' + (i===currentWeek ? ' active' : '');
+    tab.textContent = 'Semana ' + i;
+    tab.onclick = ()=>{ saveCurrentWeekFields(); currentWeek = i; buildWeekTabs(); loadWeekFields(); recalcAll(); };
+    el.appendChild(tab);
+  }
+}
+
+function saveCurrentWeekFields(){
+  data.weeks[currentWeek] = {
+    chk1: document.getElementById('chk1').checked, chk2: document.getElementById('chk2').checked, chk3: document.getElementById('chk3').checked,
+    notaFunciono: document.getElementById('notaFunciono').value, notaCambio: document.getElementById('notaCambio').value
+  };
+  data.escalate = {
+    esc1: document.getElementById('esc1').checked, esc2: document.getElementById('esc2').checked, esc3: document.getElementById('esc3').checked
+  };
+  saveData(data);
+}
+
+function loadWeekFields(){
+  const w = data.weeks[currentWeek] || {};
+  document.getElementById('chk1').checked = !!w.chk1;
+  document.getElementById('chk2').checked = !!w.chk2;
+  document.getElementById('chk3').checked = !!w.chk3;
+  document.getElementById('notaFunciono').value = w.notaFunciono || '';
+  document.getElementById('notaCambio').value = w.notaCambio || '';
+  document.getElementById('esc1').checked = !!(data.escalate||{}).esc1;
+  document.getElementById('esc2').checked = !!(data.escalate||{}).esc2;
+  document.getElementById('esc3').checked = !!(data.escalate||{}).esc3;
+}
+
+function getM9Week(i){
+  const m9 = getModule('mpv_m9_ventas_v1');
+  if(!m9) return { prospectos:0, ventas:0, ingresos:0, hasData:false };
+  const prospectos = num(m9['w_prospectos'+i]);
+  const ventas = num(m9['w_ventas'+i]);
+  const m5 = getModule('mpv_m5_finanzas_v1');
+  const precio = m5 ? num(m5.precioVenta) : 0;
+  const ingresos = ventas > 0 ? ventas * precio : 0;
+  const hasData = (prospectos > 0 || ventas > 0);
+  return { prospectos, ventas, ingresos, hasData };
+}
+
+function recalcAll(){
+  saveCurrentWeekFields();
+
+  const wk = getM9Week(currentWeek);
+  document.getElementById('rw_prospectos').textContent = wk.prospectos;
+  document.getElementById('rw_ventas').textContent = wk.ventas;
+  document.getElementById('rw_ingresos').textContent = money(wk.ingresos);
+  document.getElementById('rw_note').textContent = wk.hasData
+    ? '✓ Datos tomados de tu Módulo 9'
+    : 'Aún no hay datos de esta semana en tu Módulo 9.';
+
+  const tag = document.getElementById('weekStateTag');
+  if(wk.ingresos > 0){ tag.textContent = '✈️ En vuelo'; tag.className = 'weekstate on'; }
+  else { tag.textContent = '⏳ Esperando'; tag.className = 'weekstate off'; }
+
+  // Totales desde M9
+  const m9 = getModule('mpv_m9_ventas_v1');
+  const m5 = getModule('mpv_m5_finanzas_v1');
+  const meta = m5 ? num(m5.metaIngresos) : 0;
+  let totalIngresos=0, totalVentas=0, totalProspectos=0, mejorSemana=0;
+  const evol = [];
+  for(let i=1;i<=totalWeeks;i++){
+    const w = getM9Week(i);
+    totalIngresos += w.ingresos; totalVentas += w.ventas; totalProspectos += w.prospectos;
+    if(w.ingresos > mejorSemana) mejorSemana = w.ingresos;
+    evol.push(w);
+  }
+  document.getElementById('iIngresos').textContent = money(totalIngresos);
+  document.getElementById('iVentas').textContent = totalVentas;
+  document.getElementById('iConversion').textContent = totalProspectos>0 ? Math.round((totalVentas/totalProspectos)*100)+'%' : '0%';
+  document.getElementById('iMejor').textContent = money(mejorSemana);
+  document.getElementById('iMeta').textContent = meta>0 ? Math.round((totalIngresos/meta)*100)+'%' : '—';
+
+  const body = document.getElementById('evolBody');
+  body.innerHTML = '';
+  evol.forEach((w,idx)=>{
+    const i = idx+1;
+    const conv = w.prospectos>0 ? Math.round((w.ventas/w.prospectos)*100)+'%' : '—';
+    const estado = w.ingresos>0 ? '✈️ En vuelo' : '⏳ Esperando';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="wk">Semana ${i}</td><td>${w.ventas}</td><td>${money(w.ingresos)}</td><td>${conv}</td><td>${estado}</td>`;
+    body.appendChild(tr);
+  });
+
+  const e1 = document.getElementById('esc1').checked, e2 = document.getElementById('esc2').checked, e3 = document.getElementById('esc3').checked;
+  const box = document.getElementById('escalateBox');
+  if(e1 && e2 && e3){
+    box.className = 'escalate-box ready';
+    box.textContent = '🚀 Cumples las 3 condiciones. Es momento de escalar: más contenido, más canales, o tu segundo producto.';
+  } else {
+    box.className = 'escalate-box notyet';
+    box.textContent = 'Aún construyendo tu base — sigue registrando tus semanas antes de invertir en escalar.';
+  }
+}
+
+document.addEventListener('input', recalcAll);
+document.addEventListener('change', recalcAll);
+
+buildWeekTabs();
+loadWeekFields();
+recalcAll();
+</script>
+</body>
+</html>

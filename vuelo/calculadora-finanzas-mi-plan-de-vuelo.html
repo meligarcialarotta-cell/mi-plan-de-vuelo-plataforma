@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Vuelo Financiero · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8;
+    --cream-deep:#EFE4D4;
+    --ink:#3A2E28;
+    --ink-soft:#6B5D53;
+    --rose:#B86B77;
+    --rose-deep:#9C525E;
+    --lila:#A593C0;
+    --lila-deep:#8672A6;
+    --olive:#7C8B5A;
+    --olive-deep:#65703F;
+    --card:#FFFDFA;
+    --line: rgba(58,46,40,0.14);
+    --radius: 20px;
+    --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image:
+      radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink);
+    font-family:'Inter', sans-serif;
+    padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 760px; margin:0 auto; }
+
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{
+    font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--rose-deep); font-weight:700; margin:0 0 10px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:30px; margin:0 0 8px; line-height:1.15;
+  }
+  header p{ color:var(--ink-soft); max-width:480px; margin:0 auto; font-size:15px; line-height:1.55; }
+
+  .card{
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+    padding: 28px 26px;
+    margin-bottom: 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive));
+  }
+  .card h2{
+    font-family:'Fraunces', serif; font-weight:500; font-size:20px; margin:0 0 4px;
+  }
+  .card .sub{ color:var(--ink-soft); font-size:13.5px; margin: 0 0 18px; line-height:1.5; }
+
+  .row{ display:flex; gap:10px; align-items:center; margin-bottom:9px; }
+  .row input[type=text]{
+    flex:1; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+  .row input[type=number]{
+    width:120px; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink); text-align:right;
+  }
+  input:focus{ outline:none; border-color: var(--lila-deep); }
+  .total-line{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; margin-top:8px; border-radius:12px;
+    background: var(--cream-deep); font-weight:700; font-size:14.5px;
+  }
+  .total-line .val{ font-family:'Fraunces',serif; font-size:18px; }
+
+  .field-block{ margin-bottom:16px; }
+  .field-block label{ display:block; font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .field-block .hint{ font-size:12.5px; color:var(--ink-soft); margin: 4px 0 0; }
+  .field-block input[type=number]{
+    width:100%; font-family:'Fraunces',serif; font-size:20px; padding:12px 14px;
+    border-radius:12px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+
+  .result-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px; }
+  .result-box{
+    background: var(--cream-deep); border-radius:14px; padding:14px 16px;
+  }
+  .result-box .rlabel{ font-size:12px; color:var(--ink-soft); margin-bottom:4px; }
+  .result-box .rvalue{ font-family:'Fraunces',serif; font-size:19px; font-weight:600; }
+
+  /* Gauge signature element */
+  .gauge-wrap{ display:flex; flex-direction:column; align-items:center; padding: 6px 0 10px; }
+  .gauge{ width:220px; }
+  .gauge-caption{ font-size:13.5px; text-align:center; margin-top:10px; color:var(--ink-soft); max-width:320px; }
+  .gauge-caption b{ color:var(--ink); }
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
+  th,td{ padding:8px 6px; text-align:center; border-bottom:1px solid var(--line); }
+  th{ color:var(--ink-soft); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; }
+  td.scenario-label{ text-align:left; font-weight:600; }
+
+  .tips{ list-style:none; padding:0; margin:0; }
+  .tips li{ display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; color:var(--ink-soft); }
+  .tips li:last-child{ border-bottom:none; }
+  .tips .num{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--olive);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
+  }
+
+  .stepline{ display:flex; align-items:center; gap:10px; margin: 4px 0 16px; }
+  .stepline .dot{ width:8px; height:8px; border-radius:50%; background:var(--lila-deep); }
+  .stepline .steptext{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--lila-deep); font-weight:700; }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+
+  @media (max-width:480px){
+    .card{ padding:22px 18px; }
+    h1{ font-size:24px; }
+    .result-grid{ grid-template-columns:1fr; }
+  }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Bono exclusivo · Mi Plan de Vuelo</p>
+    <h1>Tu Panel de Vuelo Financiero</h1>
+    <p>La misma calculadora de tu Excel M5, en una experiencia más liviana. Llena tus números y observa cómo todo se recalcula solo, igual que en tu pestaña de Finanzas.</p>
+  </header>
+
+  <!-- COSTOS FIJOS -->
+  <div class="card">
+    <h2>Costos fijos mensuales</h2>
+    <p class="sub">Lo que pagas siempre, vendas o no. Haz clic en cualquier nombre y cámbialo por el tuyo.</p>
+    <div id="fixedList"></div>
+    <div class="total-line"><span>Total costos fijos</span><span class="val" id="totalFixed">$0</span></div>
+  </div>
+
+  <!-- COSTOS VARIABLES -->
+  <div class="card">
+    <h2>Costos variables por unidad</h2>
+    <p class="sub">Lo que gastas por cada venta o unidad producida.</p>
+    <div id="variableList"></div>
+    <div class="total-line"><span>Total costo variable / unidad</span><span class="val" id="totalVariable">$0</span></div>
+  </div>
+
+  <!-- PRECIO Y PUNTO DE EQUILIBRIO -->
+  <div class="card">
+    <h2>Precio y punto de equilibrio</h2>
+    <p class="sub">Define tu precio y tu meta para ver tus números clave.</p>
+
+    <div class="field-block">
+      <label>Precio de venta ($)</label>
+      <input type="number" id="precioVenta" value="0" min="0">
+    </div>
+    <div class="field-block">
+      <label>Meta de ingresos mensuales ($)</label>
+      <input type="number" id="metaIngresos" value="0" min="0">
+    </div>
+
+    <div class="result-grid">
+      <div class="result-box"><div class="rlabel">Margen por unidad</div><div class="rvalue" id="rMargen">$0</div></div>
+      <div class="result-box"><div class="rlabel">Punto de equilibrio</div><div class="rvalue" id="rEquilibrio">—</div></div>
+      <div class="result-box"><div class="rlabel">Ventas para tu meta</div><div class="rvalue" id="rVentasMeta">—</div></div>
+      <div class="result-box"><div class="rlabel">Precio mínimo rentable</div><div class="rvalue" id="rPrecioMinimo">$0</div></div>
+    </div>
+
+    <div class="gauge-wrap">
+      <svg class="gauge" id="gaugeSvg" viewBox="0 0 220 130">
+        <path d="M20,110 A90,90 0 0,1 200,110" fill="none" stroke="var(--cream-deep)" stroke-width="18" stroke-linecap="round"/>
+        <path id="gaugeArc" d="M20,110 A90,90 0 0,1 200,110" fill="none" stroke="var(--olive)" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 283"/>
+        <circle cx="110" cy="110" r="5" fill="var(--ink)"/>
+        <line id="needle" x1="110" y1="110" x2="110" y2="30" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" transform="rotate(-90 110 110)"/>
+      </svg>
+      <div class="gauge-caption" id="gaugeCaption">Define tu precio y tus costos para ver si tu vuelo está balanceado.</div>
+    </div>
+  </div>
+
+  <!-- PROYECCIÓN 6 MESES -->
+  <div class="card">
+    <h2>Proyección a 6 meses — 3 escenarios</h2>
+    <p class="sub">Se calcula automáticamente a partir de tu meta de ingresos.</p>
+    <table>
+      <thead><tr><th>Escenario</th><th>Mes 1</th><th>Mes 2</th><th>Mes 3</th><th>Mes 4</th><th>Mes 5</th><th>Mes 6</th></tr></thead>
+      <tbody id="scenarioBody"></tbody>
+    </table>
+  </div>
+
+  <!-- CUANTO VALE TU HORA -->
+  <div class="card">
+    <h2>¿Cuánto vale tu hora y tu trabajo?</h2>
+    <p class="sub">Completa siempre el Paso 1. Luego usa el Paso 2A si vendes algo físico o un servicio, o el Paso 2B si vendes un producto digital.</p>
+
+    <div class="stepline"><div class="dot"></div><div class="steptext">Paso 1 · Tu hora vale</div></div>
+    <div class="field-block">
+      <label>¿Cuántas horas trabajas en tu negocio al mes?</label>
+      <input type="number" id="horasMes" value="0" min="0">
+      <p class="hint">Tu meta mensual ya está tomada arriba automáticamente.</p>
+    </div>
+    <div class="total-line"><span>Tu hora vale</span><span class="val" id="valorHora">$0</span></div>
+
+    <div style="height:18px"></div>
+    <div class="stepline"><div class="dot"></div><div class="steptext">Paso 2A · Producto físico o servicio</div></div>
+    <div class="field-block">
+      <label>¿Cuántas horas tardas en producir 1 unidad o dar 1 sesión?</label>
+      <input type="number" id="horasUnidad" value="0" min="0">
+    </div>
+    <div class="result-grid">
+      <div class="result-box"><div class="rlabel">Costo de tu trabajo</div><div class="rvalue" id="rCostoTrabajo">$0</div></div>
+      <div class="result-box"><div class="rlabel">Costo total por unidad</div><div class="rvalue" id="rCostoTotalUnidad">$0</div></div>
+    </div>
+    <div class="total-line"><span>Precio sugerido (+50%)</span><span class="val" id="rPrecioSugeridoA">$0</span></div>
+
+    <div style="height:18px"></div>
+    <div class="stepline"><div class="dot"></div><div class="steptext">Paso 2B · Producto digital</div></div>
+    <div class="field-block">
+      <label>¿Cuántas horas en total tardaste en crear el producto?</label>
+      <input type="number" id="horasCreacion" value="0" min="0">
+    </div>
+    <div class="field-block">
+      <label>¿Cuántas ventas proyectas hacer?</label>
+      <input type="number" id="ventasProyectadas" value="0" min="0">
+    </div>
+    <div class="field-block">
+      <label>Costos de plataforma o herramientas por venta ($)</label>
+      <input type="number" id="costoPlataforma" value="0" min="0">
+    </div>
+    <div class="result-grid">
+      <div class="result-box"><div class="rlabel">Costo de tiempo por venta</div><div class="rvalue" id="rCostoTiempoVenta">$0</div></div>
+      <div class="result-box"><div class="rlabel">Costo total por venta</div><div class="rvalue" id="rCostoTotalVenta">$0</div></div>
+    </div>
+    <div class="total-line"><span>Precio digital sugerido (+50%)</span><span class="val" id="rPrecioSugeridoB">$0</span></div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="card">
+    <h2>Resumen de tus números</h2>
+    <p class="sub">Todo en un vistazo.</p>
+    <div class="result-grid">
+      <div class="result-box"><div class="rlabel">Total costos fijos / mes</div><div class="rvalue" id="sFixed">$0</div></div>
+      <div class="result-box"><div class="rlabel">Costo variable / unidad</div><div class="rvalue" id="sVariable">$0</div></div>
+      <div class="result-box"><div class="rlabel">Tu precio de venta</div><div class="rvalue" id="sPrecio">$0</div></div>
+      <div class="result-box"><div class="rlabel">Ganancia por venta</div><div class="rvalue" id="sMargen">$0</div></div>
+      <div class="result-box"><div class="rlabel">Ventas para no perder</div><div class="rvalue" id="sEquilibrio">—</div></div>
+      <div class="result-box"><div class="rlabel">Ventas para tu meta</div><div class="rvalue" id="sVentasMeta">—</div></div>
+    </div>
+
+    <div style="height:18px"></div>
+    <h2 style="font-size:16px">¿Qué puedes hacer con esta información?</h2>
+    <ul class="tips">
+      <li><span class="num">1</span> Revisa tu precio: compara tu precio de venta con el precio mínimo rentable. Si cobras menos, cada venta te cuesta dinero.</li>
+      <li><span class="num">2</span> Baja tu punto de equilibrio: si el mínimo de ventas es muy alto, sube el precio o reduce un costo fijo.</li>
+      <li><span class="num">3</span> Planifica con realismo: multiplica tu ganancia por venta por las ventas necesarias. ¿Puedes lograrlo con tu tiempo real?</li>
+      <li><span class="num">4</span> Si el precio parece caro: el problema no es el precio, es comunicar el valor. Cuando tu clienta entiende qué resuelves, paga.</li>
+      <li><span class="num">5</span> Para crecer: sube el precio antes de aumentar el volumen. A mayor precio, menos ventas necesitas y más tiempo tienes para ti.</li>
+    </ul>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus datos se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<style>.storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }</style>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const fixedDefs = [
+  "Arriendo / renta del espacio", "Servicios (agua, luz, gas, teléfono)", "Internet",
+  "Herramienta o software", "Plataforma de ventas", "Publicidad mensual",
+  "Costo fijo 7", "Costo fijo 8", "Costo fijo 9", "Costo fijo 10"
+];
+const variableDefs = [
+  "Materiales / insumos / ingredientes", "Empaque o embalaje", "Envío o transporte por unidad",
+  "Comisión por venta", "Costo variable 5", "Costo variable 6", "Costo variable 7", "Costo variable 8"
+];
+
+function buildRows(container, defs, prefix){
+  const el = document.getElementById(container);
+  defs.forEach((name, i)=>{
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <input type="text" id="${prefix}name${i}" value="${name}">
+      <input type="number" id="${prefix}val${i}" value="0" min="0">
+    `;
+    el.appendChild(row);
+  });
+}
+buildRows('fixedList', fixedDefs, 'fx');
+buildRows('variableList', variableDefs, 'vr');
+
+function num(id){ const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function money(v){ return '$' + Math.round(v).toLocaleString('es-CO'); }
+
+const STORAGE_KEY = 'mpv_m5_finanzas_v1';
+const inputIds = [];
+fixedDefs.forEach((_,i)=>{ inputIds.push('fxname'+i, 'fxval'+i); });
+variableDefs.forEach((_,i)=>{ inputIds.push('vrname'+i, 'vrval'+i); });
+inputIds.push('precioVenta','metaIngresos','horasMes','horasUnidad','horasCreacion','ventasProyectadas','costoPlataforma');
+
+function loadSaved(){
+  let saved = {};
+  try{ saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ saved = {}; }
+  inputIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && saved[id] !== undefined) el.value = saved[id];
+  });
+}
+function persistAll(){
+  const out = {};
+  inputIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) out[id] = el.value;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
+}
+loadSaved();
+
+function recalc(){
+  persistAll();
+  // Totals
+  let totalFixed = 0;
+  fixedDefs.forEach((_,i)=> totalFixed += num('fxval'+i));
+  let totalVariable = 0;
+  variableDefs.forEach((_,i)=> totalVariable += num('vrval'+i));
+  document.getElementById('totalFixed').textContent = money(totalFixed);
+  document.getElementById('totalVariable').textContent = money(totalVariable);
+
+  const precioVenta = num('precioVenta');
+  const metaIngresos = num('metaIngresos');
+
+  const margen = precioVenta > 0 ? (precioVenta - totalVariable) : 0;
+  document.getElementById('rMargen').textContent = money(margen);
+
+  let equilibrio = null;
+  if(margen > 0){ equilibrio = Math.ceil(totalFixed / margen); document.getElementById('rEquilibrio').textContent = equilibrio + ' ventas/mes'; }
+  else { document.getElementById('rEquilibrio').textContent = 'Define precio primero'; }
+
+  let ventasMeta = null;
+  if(margen > 0){ ventasMeta = Math.ceil(metaIngresos / margen); document.getElementById('rVentasMeta').textContent = ventasMeta + ' ventas/mes'; }
+  else { document.getElementById('rVentasMeta').textContent = 'Define precio primero'; }
+
+  const precioMinimo = totalVariable > 0 ? (totalVariable + totalFixed / Math.max(ventasMeta || 1, 1)) * 1.5 : 0;
+  document.getElementById('rPrecioMinimo').textContent = money(precioMinimo);
+
+  // Gauge: compara precio de venta vs precio minimo rentable
+  const gaugeArc = document.getElementById('gaugeArc');
+  const needle = document.getElementById('needle');
+  const gaugeCaption = document.getElementById('gaugeCaption');
+  if(precioVenta > 0 && precioMinimo > 0){
+    const ratio = Math.max(0, Math.min(precioVenta / precioMinimo, 2)); // 0 a 2x
+    const pct = Math.min(ratio / 2, 1);
+    const arcLen = 283 * pct;
+    gaugeArc.setAttribute('stroke-dasharray', arcLen + ' 283');
+    gaugeArc.setAttribute('stroke', ratio >= 1 ? 'var(--olive)' : 'var(--rose)');
+    const angle = -90 + (pct * 180);
+    needle.setAttribute('transform', `rotate(${angle} 110 110)`);
+    if(ratio >= 1){
+      gaugeCaption.innerHTML = `<b>Tu precio cubre tus costos.</b> Estás cobrando ${(ratio*100).toFixed(0)}% de tu precio mínimo rentable.`;
+    } else {
+      gaugeCaption.innerHTML = `<b>Tu precio está por debajo de lo rentable.</b> Cada venta te acerca menos a tu meta de lo que parece.`;
+    }
+  } else {
+    gaugeArc.setAttribute('stroke-dasharray', '0 283');
+    needle.setAttribute('transform', 'rotate(-90 110 110)');
+    gaugeCaption.textContent = 'Define tu precio y tu meta para ver si tu vuelo está balanceado.';
+  }
+
+  // Proyeccion 6 meses
+  const scenarios = [
+    { label: '🔴 Pesimista (30% meta)', factors: [0.3,0.35,0.4,0.45,0.5,0.55] },
+    { label: '🟡 Realista (65% meta)', factors: [0.45,0.55,0.65,0.7,0.75,0.8] },
+    { label: '🟢 Optimista (100%+)', factors: [0.7,0.85,1,1.1,1.2,1.3] }
+  ];
+  const body = document.getElementById('scenarioBody');
+  body.innerHTML = '';
+  scenarios.forEach(s=>{
+    const tr = document.createElement('tr');
+    let cells = `<td class="scenario-label">${s.label}</td>`;
+    s.factors.forEach(f=> cells += `<td>${metaIngresos>0 ? money(metaIngresos*f) : '$0'}</td>`);
+    tr.innerHTML = cells;
+    body.appendChild(tr);
+  });
+
+  // Cuanto vale tu hora
+  const horasMes = num('horasMes');
+  const valorHora = (metaIngresos>0 && horasMes>0) ? metaIngresos/horasMes : 0;
+  document.getElementById('valorHora').textContent = money(valorHora);
+
+  // Paso 2A
+  const horasUnidad = num('horasUnidad');
+  const costoTrabajo = valorHora * horasUnidad;
+  const costoTotalUnidad = costoTrabajo + totalVariable;
+  const precioSugeridoA = costoTotalUnidad * 1.5;
+  document.getElementById('rCostoTrabajo').textContent = money(costoTrabajo);
+  document.getElementById('rCostoTotalUnidad').textContent = money(costoTotalUnidad);
+  document.getElementById('rPrecioSugeridoA').textContent = money(precioSugeridoA);
+
+  // Paso 2B
+  const horasCreacion = num('horasCreacion');
+  const ventasProyectadas = num('ventasProyectadas');
+  const costoPlataforma = num('costoPlataforma');
+  const costoTiempoVenta = (valorHora * horasCreacion) / Math.max(ventasProyectadas, 1);
+  const costoTotalVenta = costoTiempoVenta + costoPlataforma;
+  const precioSugeridoB = costoTotalVenta * 1.5;
+  document.getElementById('rCostoTiempoVenta').textContent = money(costoTiempoVenta);
+  document.getElementById('rCostoTotalVenta').textContent = money(costoTotalVenta);
+  document.getElementById('rPrecioSugeridoB').textContent = money(precioSugeridoB);
+
+  // Resumen
+  document.getElementById('sFixed').textContent = money(totalFixed);
+  document.getElementById('sVariable').textContent = money(totalVariable);
+  document.getElementById('sPrecio').textContent = money(precioVenta);
+  document.getElementById('sMargen').textContent = money(margen);
+  document.getElementById('sEquilibrio').textContent = equilibrio ? equilibrio + ' ventas/mes' : 'Define precio primero';
+  document.getElementById('sVentasMeta').textContent = ventasMeta ? ventasMeta + ' ventas/mes' : 'Define precio primero';
+}
+
+document.addEventListener('input', recalc);
+recalc();
+</script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M9 · Plan de Tracción · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; } html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 900px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:560px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 26px 24px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:19px; margin:0 0 4px; }
+  .card .sub{ color:var(--ink-soft); font-size:13px; margin: 0 0 16px; line-height:1.5; }
+
+  .field-block{ margin-bottom:14px; }
+  .field-block label{ display:block; font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .field-block input[type=text], .field-block textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+  .field-block textarea{ resize:vertical; }
+  input:focus, textarea:focus{ outline:none; border-color: var(--lila-deep); }
+
+  .tbl-wrap{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:720px; }
+  th{ text-align:left; padding:6px 6px; font-size:10px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.03em; }
+  td{ padding:6px 6px; border-top:1px solid var(--line); vertical-align:middle; }
+  td.day{ font-weight:700; width:8%; }
+  td.enfoque{ width:12%; color:var(--ink-soft); font-size:11.5px; }
+  td.accion{ width:32%; font-size:12px; color:var(--ink-soft); }
+  table input[type=text], table input[type=number]{
+    width:100%; font-size:12.5px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line); background:#fff;
+  }
+  input[type=checkbox]{ width:18px; height:18px; accent-color:var(--olive); }
+
+  .totals-row td{ font-weight:700; font-family:'Fraunces',serif; font-size:14px; background: var(--cream-deep); }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){ .card{ padding:20px 16px; } h1{ font-size:23px; } }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Módulo 9 · Mi Plan de Vuelo</p>
+    <h1>Plan de Tracción — Días 22 al 30</h1>
+    <p>Consigue tus primeras ventas en 9 días. Ofrecer, publicar y atraer clientes reales.</p>
+  </header>
+
+  <div class="card">
+    <h2>Mi plan base de lanzamiento</h2>
+    <div class="field-block"><label>Mi frase de venta (Ayudo a… a… con…)</label>
+      <input type="text" id="p_frase" placeholder="Se toma de tus módulos anteriores si ya la tienes">
+    </div>
+    <div class="field-block"><label>Canal principal que usaré</label><input type="text" id="p_canal" placeholder="WhatsApp / Instagram / otro"></div>
+    <div class="field-block"><label>Lista de 15 personas a contactar por WhatsApp</label><textarea id="p_lista15" rows="2" placeholder="Nombres o iniciales, separados por coma"></textarea></div>
+    <div class="field-block"><label>Tema de mi primer contenido de PROBLEMA</label><textarea id="p_tema" rows="2"></textarea></div>
+    <div class="field-block"><label>2 comunidades / grupos donde participaré</label><input type="text" id="p_comunidades" placeholder="Ej: grupo de mamás X, comunidad Y"></div>
+  </div>
+
+  <div class="card">
+    <h2>Tracker días 22–30 — día a día</h2>
+    <p class="sub">Tu guion ya está listo. Solo marca y registra tus números.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Día</th><th>Enfoque</th><th>Acción principal</th><th>✓</th><th>Contactos</th><th>Respuestas</th><th>Ventas</th></tr></thead>
+      <tbody id="trackerBody"></tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td colspan="4">Totales 9 días</td>
+          <td id="totContactos">0</td><td id="totRespuestas">0</td><td id="totVentas">0</td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Registro semanal de ventas</h2>
+    <p class="sub">Los ingresos se calculan solos con el precio que definiste en tu Módulo 5.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Semana</th><th>Prospectos</th><th>Ventas cerradas</th><th>Ingresos ($)</th><th>Conversión</th><th>Canal principal</th></tr></thead>
+      <tbody id="semanasBody"></tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td>Total acumulado</td>
+          <td id="totProspectos">0</td><td id="totVentasSem">0</td><td id="totIngresos">$0</td><td id="totConv">0%</td><td></td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_m9_ventas_v1';
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+function getModule(key){ try{ return JSON.parse(localStorage.getItem(key)) || null; }catch(e){ return null; } }
+let data = loadData();
+
+const planFields = ['p_frase','p_canal','p_lista15','p_tema','p_comunidades'];
+planFields.forEach(id=>{ const el = document.getElementById(id); if(el && data[id]) el.value = data[id]; });
+
+// Auto-suggest frase from M2+M3 if empty
+if(!data.p_frase){
+  const m3 = getModule('mpv_m3_cliente_v1');
+  const m2 = getModule('mpv_m2_idea_v1');
+  if(m3 && m3.c_nombre){
+    document.getElementById('p_frase').value = `Ayudo a ${m3.c_nombre} a resolver ${(m3.c_problema||'[problema]').toLowerCase()} con ${(m2 && m2.ideaFinal) || '[tu idea]'}.`;
+  }
+}
+
+const days = [
+  { d:'Día 22', enfoque:'Calentamiento', accion:'PROBLEMA en contenido + 5 WhatsApp directos' },
+  { d:'Día 23', enfoque:'Calentamiento', accion:'Stories de proceso + 5 WhatsApp más' },
+  { d:'Día 24', enfoque:'Contenido clave', accion:'Post de SOLUCIÓN + activa 2 comunidades' },
+  { d:'Día 25', enfoque:'Contenido clave', accion:'Stories testimonio / resultado real + 5 DMs' },
+  { d:'Día 26', enfoque:'Oferta directa', accion:'Post OFERTA completo con precio y CTA claro' },
+  { d:'Día 27', enfoque:'Seguimiento', accion:'Responde TODOS + recordatorio suave a interesadas' },
+  { d:'Día 28', enfoque:'Cierre sem. 1', accion:'Resultado parcial publicado + nueva oferta directa' },
+  { d:'Día 29', enfoque:'Profundización', accion:'Contenido nuevo + DMs de seguimiento pendientes' },
+  { d:'Día 30', enfoque:'🏁 Cierre final', accion:'Urgencia real + cierre + mensaje de agradecimiento' }
+];
+const trackerBody = document.getElementById('trackerBody');
+days.forEach((day, i)=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="day">${day.d}</td>
+    <td class="enfoque">${day.enfoque}</td>
+    <td class="accion">${day.accion}</td>
+    <td style="text-align:center"><input type="checkbox" id="t_check${i}"></td>
+    <td><input type="number" id="t_contactos${i}" value="0" min="0"></td>
+    <td><input type="number" id="t_respuestas${i}" value="0" min="0"></td>
+    <td><input type="number" id="t_ventas${i}" value="0" min="0"></td>
+  `;
+  trackerBody.appendChild(tr);
+});
+const trackIds = [];
+days.forEach((_,i)=>{ trackIds.push('t_contactos'+i,'t_respuestas'+i,'t_ventas'+i); });
+trackIds.forEach(id=>{ const el = document.getElementById(id); if(el && data[id] !== undefined) el.value = data[id]; });
+days.forEach((_,i)=>{ const el = document.getElementById('t_check'+i); if(el) el.checked = !!data['t_check'+i]; });
+
+// Semanas
+const semanasBody = document.getElementById('semanasBody');
+for(let i=1;i<=8;i++){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-weight:600">Semana ${i}</td>
+    <td><input type="number" id="w_prospectos${i}" value="0" min="0"></td>
+    <td><input type="number" id="w_ventas${i}" value="0" min="0"></td>
+    <td id="w_ingresos${i}">$0</td>
+    <td id="w_conv${i}">0%</td>
+    <td><input type="text" id="w_canal${i}" placeholder="Ej: Instagram"></td>
+  `;
+  semanasBody.appendChild(tr);
+}
+const semIds = [];
+for(let i=1;i<=8;i++){ semIds.push('w_prospectos'+i,'w_ventas'+i,'w_canal'+i); }
+semIds.forEach(id=>{ const el = document.getElementById(id); if(el && data[id] !== undefined) el.value = data[id]; });
+
+function num(id){ const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function money(v){ return '$' + Math.round(v).toLocaleString('es-CO'); }
+
+function recalc(){
+  planFields.forEach(id=>{ data[id] = document.getElementById(id).value; });
+
+  // Tracker totals
+  let totContactos=0, totRespuestas=0, totVentas=0;
+  days.forEach((_,i)=>{
+    data['t_check'+i] = document.getElementById('t_check'+i).checked;
+    data['t_contactos'+i] = document.getElementById('t_contactos'+i).value;
+    data['t_respuestas'+i] = document.getElementById('t_respuestas'+i).value;
+    data['t_ventas'+i] = document.getElementById('t_ventas'+i).value;
+    totContactos += num('t_contactos'+i);
+    totRespuestas += num('t_respuestas'+i);
+    totVentas += num('t_ventas'+i);
+  });
+  document.getElementById('totContactos').textContent = totContactos;
+  document.getElementById('totRespuestas').textContent = totRespuestas;
+  document.getElementById('totVentas').textContent = totVentas;
+
+  // Precio desde M5
+  const m5 = getModule('mpv_m5_finanzas_v1');
+  const precio = m5 ? (parseFloat(m5.precioVenta) || 0) : 0;
+
+  let totProspectos=0, totVentasSem=0, totIngresos=0;
+  for(let i=1;i<=8;i++){
+    data['w_prospectos'+i] = document.getElementById('w_prospectos'+i).value;
+    data['w_ventas'+i] = document.getElementById('w_ventas'+i).value;
+    data['w_canal'+i] = document.getElementById('w_canal'+i).value;
+    const prospectos = num('w_prospectos'+i);
+    const ventas = num('w_ventas'+i);
+    const ingresos = ventas > 0 ? ventas * precio : 0;
+    const conv = prospectos > 0 ? (ventas/prospectos) : 0;
+    document.getElementById('w_ingresos'+i).textContent = money(ingresos);
+    document.getElementById('w_conv'+i).textContent = (conv*100).toFixed(0)+'%';
+    totProspectos += prospectos; totVentasSem += ventas; totIngresos += ingresos;
+  }
+  document.getElementById('totProspectos').textContent = totProspectos;
+  document.getElementById('totVentasSem').textContent = totVentasSem;
+  document.getElementById('totIngresos').textContent = money(totIngresos);
+  document.getElementById('totConv').textContent = totProspectos>0 ? Math.round((totVentasSem/totProspectos)*100)+'%' : '0%';
+
+  saveData(data);
+}
+
+document.addEventListener('input', recalc);
+document.addEventListener('change', recalc);
+recalc();
+</script>
+</body>
+</html>

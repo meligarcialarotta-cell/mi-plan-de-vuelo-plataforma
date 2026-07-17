@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Negocio · Resumen Completo · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; } html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 900px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:30px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:560px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .progress-overview{ display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+  .progress-overview .bar{ flex:1; height:12px; border-radius:8px; background:var(--cream-deep); overflow:hidden; }
+  .progress-overview .fill{ height:100%; background: linear-gradient(90deg, var(--lila), var(--rose), var(--olive)); border-radius:8px; transition:width .4s ease; }
+  .progress-overview .label{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; min-width:110px; text-align:right; }
+
+  .nav-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:24px; }
+  @media (max-width:720px){ .nav-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:480px){ .nav-grid{ grid-template-columns:repeat(2,1fr); } }
+  .nav-chip{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border-radius:12px;
+    background:#fff; border:1.5px solid var(--line); font-size:11px; font-weight:600; text-align:center; }
+  .nav-chip.done{ background: rgba(124,139,90,0.14); border-color:var(--olive); color:var(--olive-deep); }
+  .nav-chip.pending{ color:var(--ink-soft); }
+  .nav-chip .dot{ font-size:16px; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 24px 22px; margin-bottom: 18px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:17px; margin:0 0 2px; display:flex; align-items:center; gap:8px; }
+  .card h2 .modtag{ font-family:'Inter',sans-serif; font-size:10px; background:var(--lila); color:#fff; padding:2px 8px; border-radius:6px; font-weight:700; }
+  .card .content{ font-size:13.5px; color:var(--ink); line-height:1.6; margin-top:10px; }
+  .card .content .missing{ color:var(--ink-soft); font-style:italic; }
+  .card .content b{ color:var(--ink); }
+  .card .content .row{ display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid var(--line); }
+  .card .content .row:last-child{ border-bottom:none; }
+  .card .content .row .k{ color:var(--ink-soft); }
+
+  .hero-phrase{
+    background: var(--cream-deep); border-radius:16px; padding:22px; text-align:center;
+    font-family:'Fraunces',serif; font-size:18px; line-height:1.6; color:var(--ink); margin-bottom:20px;
+  }
+  .hero-phrase .tag{ display:block; font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--rose-deep); font-weight:700; margin-bottom:10px; }
+
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  @media (max-width:600px){ .kpi-grid{ grid-template-columns:repeat(2,1fr); } }
+  .kpi-box{ background: var(--cream-deep); border-radius:14px; padding:12px 10px; text-align:center; }
+  .kpi-box .klabel{ font-size:10.5px; color:var(--ink-soft); margin-bottom:4px; }
+  .kpi-box .kvalue{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){ .card{ padding:18px 16px; } h1{ font-size:24px; } }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Mi Plan de Vuelo</p>
+    <h1>Mi Negocio — Resumen Completo</h1>
+    <p>Todo lo que has construido en un solo vistazo. Esta pantalla se llena sola con lo que guardaste en cada módulo.</p>
+  </header>
+
+  <div class="progress-overview">
+    <div class="bar"><div class="fill" id="overallFill" style="width:0%"></div></div>
+    <div class="label" id="overallLabel">0 / 10 módulos</div>
+  </div>
+
+  <div class="nav-grid" id="navGrid"></div>
+
+  <div class="hero-phrase" id="heroPhrase">
+    <span class="tag">Mi frase de posicionamiento</span>
+    Completa tus módulos de Idea y Cliente para verla aquí.
+  </div>
+
+  <div class="card" id="cardM1">
+    <h2><span class="modtag">M1</span> Tu Propósito</h2>
+    <div class="content" id="contentM1"></div>
+  </div>
+
+  <div class="card" id="cardM2">
+    <h2><span class="modtag">M2</span> Tu Idea</h2>
+    <div class="content" id="contentM2"></div>
+  </div>
+
+  <div class="card" id="cardM3">
+    <h2><span class="modtag">M3</span> Tu Cliente</h2>
+    <div class="content" id="contentM3"></div>
+  </div>
+
+  <div class="card" id="cardM4">
+    <h2><span class="modtag">M4</span> Tu MVP</h2>
+    <div class="content" id="contentM4"></div>
+  </div>
+
+  <div class="card" id="cardM5">
+    <h2><span class="modtag">M5</span> Finanzas</h2>
+    <div class="content kpi-grid" id="contentM5"></div>
+  </div>
+
+  <div class="card" id="cardM6">
+    <h2><span class="modtag">M6</span> Canvas</h2>
+    <div class="content" id="contentM6"></div>
+  </div>
+
+  <div class="card" id="cardM7">
+    <h2><span class="modtag">M7</span> Tiempo</h2>
+    <div class="content" id="contentM7"></div>
+  </div>
+
+  <div class="card" id="cardM8">
+    <h2><span class="modtag">M8</span> Checklist de lanzamiento</h2>
+    <div class="content" id="contentM8"></div>
+  </div>
+
+  <div class="card" id="cardM9M10">
+    <h2><span class="modtag">M9-M10</span> Ventas y Seguimiento</h2>
+    <div class="content kpi-grid" id="contentM9"></div>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Este resumen lee la información guardada en este mismo navegador — no envía nada a ningún lado.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+function getModule(key){ try{ return JSON.parse(localStorage.getItem(key)) || null; }catch(e){ return null; } }
+function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function money(v){ return '$' + Math.round(v).toLocaleString('es-CO'); }
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+const m1 = getModule('mpv_m1_proposito_v1');
+const m2 = getModule('mpv_m2_idea_v1');
+const m3 = getModule('mpv_m3_cliente_v1');
+const m4 = getModule('mpv_m4_mvp_v1');
+const m5 = getModule('mpv_m5_finanzas_v1');
+const m6 = getModule('mpv_m6_canvas_v1');
+const m7 = getModule('mpv_m7_tiempo_v1');
+const m8 = getModule('mpv_m8_checklist_v1');
+const m9 = getModule('mpv_m9_ventas_v1');
+
+// --- Completeness detection ---
+const modStatus = {
+  M1: !!(m1 && (m1.q1 || m1.q2 || m1.q3)),
+  M2: !!(m2 && m2.ideaFinal),
+  M3: !!(m3 && m3.c_nombre && m3.c_problema),
+  M4: !!(m4 && m4.d_nombre),
+  M5: !!(m5 && num(m5.precioVenta) > 0),
+  M6: !!(m6 && m6.b1 && m6.b2 && m6.b3),
+  M7: !!(m7 && (m7.v_siesta_tiempo || m7.v_manana_tiempo || m7.v_noche_tiempo || m7.v_finde_tiempo)),
+  M8: !!(m8 && Object.keys(m8).some(k=>m8[k]===true)),
+  M9: !!(m9 && (m9.p_frase || Object.keys(m9).some(k=>k.startsWith('w_ventas') && num(m9[k])>0)))
+};
+const doneCount = Object.values(modStatus).filter(Boolean).length + (m9 ? 1 : 0); // M9+M10 count together loosely
+const totalMods = 10;
+const completedApprox = Object.values(modStatus).filter(Boolean).length;
+document.getElementById('overallFill').style.width = Math.round((completedApprox/9)*100) + '%';
+document.getElementById('overallLabel').textContent = completedApprox + ' / 9 módulos';
+
+// --- Nav grid ---
+const navGrid = document.getElementById('navGrid');
+const navItems = [
+  {k:'M1', label:'Propósito', done: modStatus.M1},
+  {k:'M2', label:'Idea', done: modStatus.M2},
+  {k:'M3', label:'Cliente', done: modStatus.M3},
+  {k:'M4', label:'MVP', done: modStatus.M4},
+  {k:'M5', label:'Finanzas', done: modStatus.M5},
+  {k:'M6', label:'Canvas', done: modStatus.M6},
+  {k:'M7', label:'Tiempo', done: modStatus.M7},
+  {k:'M8', label:'Checklist', done: modStatus.M8},
+  {k:'M9', label:'Ventas', done: modStatus.M9},
+  {k:'M10', label:'Seguimiento', done: !!m9}
+];
+navItems.forEach(item=>{
+  const chip = document.createElement('div');
+  chip.className = 'nav-chip ' + (item.done ? 'done' : 'pending');
+  chip.innerHTML = `<span class="dot">${item.done ? '✓' : '○'}</span><span>${item.k}</span><span>${item.label}</span>`;
+  navGrid.appendChild(chip);
+});
+
+// --- Hero phrase (M2+M3) ---
+const hero = document.getElementById('heroPhrase');
+if(m3 && m3.c_nombre){
+  const idea = (m2 && m2.ideaFinal) ? m2.ideaFinal : '[tu idea]';
+  const problema = m3.c_problema || '[problema]';
+  hero.innerHTML = `<span class="tag">Mi frase de posicionamiento</span>Ayudo a ${esc(m3.c_nombre)} a resolver ${esc(problema.toLowerCase())} con ${esc(idea)}.`;
+} else {
+  hero.innerHTML = `<span class="tag">Mi frase de posicionamiento</span>Completa tus módulos de Idea y Cliente para verla aquí.`;
+}
+
+// --- M1 ---
+const c1 = document.getElementById('contentM1');
+if(modStatus.M1){
+  c1.innerHTML = `<div class="row"><span class="k">Por qué</span><b>${esc(m1.q1)||'—'}</b></div>
+    <div class="row"><span class="k">Para quién</span><b>${esc(m1.q2)||'—'}</b></div>
+    <div class="row"><span class="k">Área de propósito</span><b>${esc(m1.area)||'—'}</b></div>`;
+} else { c1.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M2 ---
+const c2 = document.getElementById('contentM2');
+if(modStatus.M2){
+  c2.innerHTML = `<div class="row"><span class="k">Idea ganadora</span><b>${esc(m2.ideaFinal)}</b></div>`;
+} else { c2.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M3 ---
+const c3 = document.getElementById('contentM3');
+if(modStatus.M3){
+  c3.innerHTML = `<div class="row"><span class="k">Cliente</span><b>${esc(m3.c_nombre)}, ${esc(m3.c_edad)||''}</b></div>
+    <div class="row"><span class="k">Problema</span><b>${esc(m3.c_problema)}</b></div>`;
+} else { c3.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M4 ---
+const c4 = document.getElementById('contentM4');
+if(modStatus.M4){
+  c4.innerHTML = `<div class="row"><span class="k">MVP</span><b>${esc(m4.d_nombre)}</b></div>
+    <div class="row"><span class="k">Formato</span><b>${esc(m4.d_formato)||'—'}</b></div>`;
+} else { c4.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M5 ---
+const c5 = document.getElementById('contentM5');
+if(modStatus.M5){
+  const precio = num(m5.precioVenta);
+  const meta = num(m5.metaIngresos);
+  let totalFijos=0; for(let i=0;i<10;i++){ totalFijos += num(m5['fxval'+i]); }
+  c5.innerHTML = `<div class="kpi-box"><div class="klabel">Precio</div><div class="kvalue">${money(precio)}</div></div>
+    <div class="kpi-box"><div class="klabel">Meta mensual</div><div class="kvalue">${money(meta)}</div></div>
+    <div class="kpi-box"><div class="klabel">Costos fijos</div><div class="kvalue">${money(totalFijos)}</div></div>`;
+} else { c5.innerHTML = '<span class="missing">Aún no completado.</span>'; c5.className = 'content'; }
+
+// --- M6 ---
+const c6 = document.getElementById('contentM6');
+if(modStatus.M6){
+  c6.innerHTML = `<div class="row"><span class="k">Problema</span><b>${esc(m6.b1)}</b></div>
+    <div class="row"><span class="k">Solución</span><b>${esc(m6.b2)}</b></div>`;
+} else { c6.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M7 ---
+const c7 = document.getElementById('contentM7');
+if(modStatus.M7){
+  const bloque = m7.v_siesta_tarea || m7.v_manana_tarea || m7.v_noche_tarea || m7.v_finde_tarea || '—';
+  c7.innerHTML = `<div class="row"><span class="k">Bloque principal</span><b>${esc(bloque)}</b></div>`;
+} else { c7.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M8 ---
+const c8 = document.getElementById('contentM8');
+if(m8){
+  const checked = Object.keys(m8).filter(k=>m8[k]===true).length;
+  c8.innerHTML = `<div class="row"><span class="k">Ítems marcados</span><b>${checked} / 9</b></div>
+    <div class="row"><span class="k">Estado</span><b>${checked>=9 ? '🚀 Lista para lanzar' : '⏳ En progreso'}</b></div>`;
+} else { c8.innerHTML = '<span class="missing">Aún no completado.</span>'; }
+
+// --- M9/M10 ---
+const c9 = document.getElementById('contentM9');
+if(m9){
+  let totalVentas=0, totalIngresos=0, totalProspectos=0;
+  const precio = m5 ? num(m5.precioVenta) : 0;
+  for(let i=1;i<=8;i++){
+    const v = num(m9['w_ventas'+i]);
+    totalVentas += v;
+    totalIngresos += v * precio;
+    totalProspectos += num(m9['w_prospectos'+i]);
+  }
+  const conv = totalProspectos>0 ? Math.round((totalVentas/totalProspectos)*100) : 0;
+  c9.innerHTML = `<div class="kpi-box"><div class="klabel">Ventas totales</div><div class="kvalue">${totalVentas}</div></div>
+    <div class="kpi-box"><div class="klabel">Ingresos</div><div class="kvalue">${money(totalIngresos)}</div></div>
+    <div class="kpi-box"><div class="klabel">Conversión</div><div class="kvalue">${conv}%</div></div>`;
+} else { c9.innerHTML = '<span class="missing">Aún no completado.</span>'; c9.className = 'content'; }
+</script>
+</body>
+</html>

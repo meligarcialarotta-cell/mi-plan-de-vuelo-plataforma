@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M2 · Mi Idea · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; } html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 820px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:520px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 26px 24px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:19px; margin:0 0 4px; }
+  .card .sub{ color:var(--ink-soft); font-size:13px; margin: 0 0 16px; line-height:1.5; }
+
+  .ideas-table-wrap{ overflow-x:auto; }
+  table.compare{ width:100%; border-collapse:collapse; min-width:620px; }
+  table.compare th{ text-align:left; padding:8px 8px; font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; }
+  table.compare td{ padding:8px 8px; border-top:1px solid var(--line); vertical-align:middle; }
+  table.compare td.crit{ font-size:13.5px; width:38%; }
+  input.idea-name{
+    width:100%; font-family:'Fraunces',serif; font-size:15px; font-weight:600; padding:8px 10px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+  select.crit-select{
+    width:100%; font-family:'Inter',sans-serif; font-size:13px; padding:8px 6px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+  input:focus, select:focus{ outline:none; border-color: var(--lila-deep); }
+
+  .score-row td{ font-weight:700; font-family:'Fraunces',serif; font-size:16px; padding-top:12px; }
+
+  .winner-box{
+    margin-top:18px; padding:20px; border-radius:16px; background: rgba(124,139,90,0.14);
+    text-align:center;
+  }
+  .winner-box .wtag{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--olive-deep); font-weight:700; }
+  .winner-box .wname{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin:6px 0 4px; }
+  .winner-box .wscore{ font-size:13.5px; color:var(--ink-soft); }
+
+  .field-block{ margin-top:16px; }
+  .field-block label{ display:block; font-size:13.5px; font-weight:600; margin-bottom:6px; }
+  .field-block textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:12px; border:1.5px solid var(--line); background:#fff; color:var(--ink); resize:vertical;
+  }
+  textarea:focus{ outline:none; border-color:var(--lila-deep); }
+
+  /* Ikigai toggle */
+  .toggle-btn{
+    display:inline-flex; align-items:center; gap:8px; background:none; border:1.5px solid var(--line);
+    border-radius:12px; padding:10px 16px; font-size:13.5px; font-weight:600; color:var(--ink-soft); cursor:pointer;
+  }
+  .toggle-btn:hover{ border-color:var(--lila-deep); }
+  .ikigai-section{ display:none; margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--line); }
+  .ikigai-section.open{ display:block; }
+  .ikigai-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .ikigai-grid{ grid-template-columns:1fr; } }
+  .ikigai-grid .field-block{ margin-top:0; }
+  .ikigai-grid textarea{ min-height:60px; }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:480px){ .card{ padding:20px 16px; } h1{ font-size:23px; } }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Módulo 2 · Mi Plan de Vuelo</p>
+    <h1>Tu Idea — Filtro de Viabilidad</h1>
+    <p>Puntúa tus 3 ideas con los mismos 5 criterios de tu sistema, y descubre cuál tiene más potencial real.</p>
+  </header>
+
+  <div class="card">
+    <h2>¿Aún no tienes una idea clara?</h2>
+    <p class="sub">Descúbrela en la intersección de lo que ya eres — no hay que inventar nada.</p>
+    <button class="toggle-btn" id="ikigaiToggle">✈ Encontrar mi idea con el Ikigai</button>
+    <div class="ikigai-section" id="ikigaiSection">
+      <div class="ikigai-grid">
+        <div class="field-block"><label>Lo que amas hacer</label><textarea id="ik_amas" placeholder="Aunque no te paguen por eso"></textarea></div>
+        <div class="field-block"><label>Lo que sabes hacer</label><textarea id="ik_sabes" placeholder="En qué te piden ayuda seguido"></textarea></div>
+        <div class="field-block"><label>Lo que necesitan a tu alrededor</label><textarea id="ik_necesitan" placeholder="Un problema que ves repetirse"></textarea></div>
+        <div class="field-block"><label>Lo que ya ves que se paga</label><textarea id="ik_pagan" placeholder="En Instagram, Hotmart, tu ciudad"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Nombres de tus 3 ideas</h2>
+    <p class="sub">Escribe al menos 3 para comparar — no valores solo la primera que se te ocurra.</p>
+    <div class="ideas-table-wrap">
+    <table class="compare">
+      <thead>
+        <tr><th></th><th>Idea 1</th><th>Idea 2</th><th>Idea 3</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="crit"></td>
+          <td><input class="idea-name" id="name0" placeholder="Nombre de la idea"></td>
+          <td><input class="idea-name" id="name1" placeholder="Nombre de la idea"></td>
+          <td><input class="idea-name" id="name2" placeholder="Nombre de la idea"></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Criterios de viabilidad</h2>
+    <p class="sub">Sí = 1 punto · Tal vez = 0.5 · No = 0 punto, por cada idea.</p>
+    <div class="ideas-table-wrap">
+    <table class="compare" id="critTable">
+      <thead><tr><th></th><th>Idea 1</th><th>Idea 2</th><th>Idea 3</th></tr></thead>
+      <tbody id="critBody"></tbody>
+      <tfoot>
+        <tr class="score-row">
+          <td>Puntaje total (sobre 100)</td>
+          <td id="score0">0</td><td id="score1">0</td><td id="score2">0</td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+
+    <div class="winner-box" id="winnerBox">
+      <div class="wtag">Idea ganadora</div>
+      <div class="wname" id="winnerName">Completa los criterios para ver tu resultado</div>
+      <div class="wscore" id="winnerScore"></div>
+    </div>
+
+    <div class="field-block">
+      <label>Mi idea ganadora (confirma o ajústala aquí):</label>
+      <textarea id="ideaFinal" rows="2" placeholder="Escribe tu idea final, con tus palabras"></textarea>
+    </div>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_m2_idea_v1';
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e){ return {}; } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+let data = loadData();
+
+const criteria = [
+  "¿Ya existe alguien que pague por esto?",
+  "¿Puedes empezar con menos de $100?",
+  "¿Puedes operarlo desde casa?",
+  "¿Puedes validarlo en 7 días?",
+  "¿Te emociona genuinamente?"
+];
+
+function buildCritTable(){
+  const body = document.getElementById('critBody');
+  body.innerHTML = '';
+  criteria.forEach((c, ci)=>{
+    const tr = document.createElement('tr');
+    let cells = `<td class="crit">${c}</td>`;
+    for(let idea=0; idea<3; idea++){
+      cells += `<td><select class="crit-select" id="c${idea}_${ci}">
+        <option value="0">No</option>
+        <option value="0.5">Tal vez</option>
+        <option value="1">Sí</option>
+      </select></td>`;
+    }
+    tr.innerHTML = cells;
+    body.appendChild(tr);
+  });
+}
+buildCritTable();
+
+// Load saved
+for(let i=0;i<3;i++){
+  document.getElementById('name'+i).value = (data.names && data.names[i]) || '';
+  for(let ci=0; ci<criteria.length; ci++){
+    const sel = document.getElementById(`c${i}_${ci}`);
+    const saved = data.crit && data.crit[i] ? data.crit[i][ci] : undefined;
+    if(saved !== undefined) sel.value = saved;
+  }
+}
+document.getElementById('ideaFinal').value = data.ideaFinal || '';
+document.getElementById('ik_amas').value = (data.ikigai && data.ikigai.amas) || '';
+document.getElementById('ik_sabes').value = (data.ikigai && data.ikigai.sabes) || '';
+document.getElementById('ik_necesitan').value = (data.ikigai && data.ikigai.necesitan) || '';
+document.getElementById('ik_pagan').value = (data.ikigai && data.ikigai.pagan) || '';
+
+document.getElementById('ikigaiToggle').addEventListener('click', ()=>{
+  document.getElementById('ikigaiSection').classList.toggle('open');
+});
+
+function recalc(){
+  const names = [];
+  const critVals = [[],[],[]];
+  const scores = [0,0,0];
+  for(let i=0;i<3;i++){
+    names.push(document.getElementById('name'+i).value.trim());
+    for(let ci=0; ci<criteria.length; ci++){
+      const v = parseFloat(document.getElementById(`c${i}_${ci}`).value) || 0;
+      critVals[i].push(v);
+      scores[i] += v;
+    }
+    scores[i] = scores[i] * 20;
+    document.getElementById('score'+i).textContent = scores[i].toFixed(0);
+  }
+
+  let winnerIdx = 0;
+  if(scores[1] > scores[winnerIdx]) winnerIdx = 1;
+  if(scores[2] > scores[winnerIdx]) winnerIdx = 2;
+
+  const winnerNameEl = document.getElementById('winnerName');
+  const winnerScoreEl = document.getElementById('winnerScore');
+  if(names.some(n=>n) ){
+    winnerNameEl.textContent = names[winnerIdx] || `Idea ${winnerIdx+1}`;
+    winnerScoreEl.textContent = `Puntaje: ${scores[winnerIdx].toFixed(0)} / 100`;
+  } else {
+    winnerNameEl.textContent = 'Completa los criterios para ver tu resultado';
+    winnerScoreEl.textContent = '';
+  }
+
+  data.names = names;
+  data.crit = critVals;
+  data.ideaFinal = document.getElementById('ideaFinal').value;
+  data.ikigai = {
+    amas: document.getElementById('ik_amas').value,
+    sabes: document.getElementById('ik_sabes').value,
+    necesitan: document.getElementById('ik_necesitan').value,
+    pagan: document.getElementById('ik_pagan').value
+  };
+  saveData(data);
+}
+
+document.addEventListener('input', recalc);
+document.addEventListener('change', recalc);
+recalc();
+</script>
+</body>
+</html>

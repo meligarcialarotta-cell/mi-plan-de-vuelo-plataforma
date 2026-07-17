@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M7 · Mi Plan Semanal · Mi Plan de Vuelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E8; --cream-deep:#EFE4D4; --ink:#3A2E28; --ink-soft:#6B5D53;
+    --rose:#B86B77; --rose-deep:#9C525E; --lila:#A593C0; --lila-deep:#8672A6;
+    --olive:#7C8B5A; --olive-deep:#65703F; --card:#FFFDFA; --line: rgba(58,46,40,0.14);
+    --radius: 20px; --shadow: 0 18px 40px -18px rgba(58,46,40,0.25);
+  }
+  *{ box-sizing:border-box; } html,body{ margin:0; padding:0; }
+  body{
+    background: var(--cream);
+    background-image: radial-gradient(circle at 10% 6%, rgba(165,147,192,0.10), transparent 40%),
+      radial-gradient(circle at 90% 94%, rgba(184,107,119,0.10), transparent 45%);
+    color: var(--ink); font-family:'Inter', sans-serif; padding: 34px 16px 60px;
+  }
+  .wrap{ max-width: 780px; margin:0 auto; }
+  header{ text-align:center; margin-bottom: 26px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--rose-deep); font-weight:700; margin:0 0 10px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0 0 8px; line-height:1.15; }
+  header p{ color:var(--ink-soft); max-width:520px; margin:0 auto; font-size:14.5px; line-height:1.55; }
+
+  .card{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line);
+    padding: 26px 24px; margin-bottom: 20px; position:relative; overflow:hidden; }
+  .card::before{ content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, var(--lila), var(--rose) 50%, var(--olive)); }
+  .card h2{ font-family:'Fraunces', serif; font-weight:500; font-size:19px; margin:0 0 4px; }
+  .card .sub{ color:var(--ink-soft); font-size:13px; margin: 0 0 16px; line-height:1.5; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{ text-align:left; padding:6px 8px; font-size:10.5px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.03em; }
+  td{ padding:6px 8px; border-top:1px solid var(--line); vertical-align:middle; }
+  td.momento{ font-weight:600; width:34%; }
+  td.dia{ font-weight:600; width:16%; }
+  table input[type=text]{
+    width:100%; font-family:'Inter',sans-serif; font-size:13px; padding:8px 10px;
+    border-radius:9px; border:1.5px solid var(--line); background:#fff; color:var(--ink);
+  }
+  table input:focus{ outline:none; border-color:var(--lila-deep); }
+  input[type=checkbox]{ width:20px; height:20px; accent-color:var(--olive); }
+
+  .highlight-row td{ background: rgba(165,147,192,0.10); }
+
+  .field-block{ margin-top:4px; }
+  .field-block label{ display:block; font-size:13.5px; font-weight:600; margin-bottom:6px; }
+  .field-block textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14px; padding:10px 12px;
+    border-radius:10px; border:1.5px solid var(--line); background:#fff; color:var(--ink); resize:vertical;
+  }
+  textarea:focus{ outline:none; border-color:var(--lila-deep); }
+
+  .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
+  .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
+  .storage-note{ font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+  @media (max-width:600px){
+    table{ font-size:12px; }
+    .card{ padding:20px 16px; } h1{ font-size:23px; }
+  }
+
+  .backup-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .backup-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .backup-btn:hover{ border-color:var(--lila-deep); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Módulo 7 · Mi Plan de Vuelo</p>
+    <h1>Mi Plan Semanal de Trabajo</h1>
+    <p>Diseña tu propio sistema con las ventanas de tiempo que ya tienes. Que funcione con tu vida real, no con una agenda ideal.</p>
+  </header>
+
+  <div class="card">
+    <h2>Mis ventanas de tiempo — ¿cuándo puedo trabajar?</h2>
+    <p class="sub">Identifica tus momentos reales disponibles, sin inventar tiempo que no tienes.</p>
+    <table>
+      <thead><tr><th>Momento</th><th>Tiempo disponible</th><th>Tarea asignada</th></tr></thead>
+      <tbody id="ventanasBody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Mi sistema semanal — 20 min por día</h2>
+    <p class="sub">Un bloque diario de 20 minutos, sin excusas y sin sobre-exigencia.</p>
+    <table>
+      <thead><tr><th>Día</th><th>Tarea principal (20 min)</th><th>¿Lo hice?</th><th>Resultado / notas</th></tr></thead>
+      <tbody id="semanaBody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>La regla del 80% — anti-perfeccionismo</h2>
+    <p class="sub">No necesitas que esté perfecto. Necesitas que esté publicado.</p>
+    <div class="field-block">
+      <label>¿Qué puedo publicar ESTA semana aunque esté al 80%?</label>
+      <textarea id="regla80" rows="2" placeholder="Escribe tu decisión, sin darle más vueltas"></textarea>
+    </div>
+  </div>
+
+  <div class="footbrand">
+    <div class="strip"></div>
+    Mi Plan de Vuelo — Tú tienes la idea. Yo te doy el mapa. El vuelo es tuyo.
+    <div class="storage-note">Tus respuestas se guardan solo en este navegador y este dispositivo.</div>
+  </div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="downloadProgress()">⬇ Descargar mi progreso</button>
+    <button class="backup-btn" onclick="triggerUpload()">⬆ Cargar mi progreso</button>
+    <input type="file" id="uploadFile" accept=".json" style="display:none" onchange="uploadProgress(event)">
+  </div>
+
+</div>
+
+<script>
+function downloadProgress(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('mpv_')) all[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mi-plan-de-vuelo-progreso.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function triggerUpload(){ document.getElementById('uploadFile').click(); }
+function uploadProgress(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      Object.keys(obj).forEach(k=>{ if(k.startsWith('mpv_')) localStorage.setItem(k, obj[k]); });
+      alert('¡Progreso cargado con éxito! La página se va a recargar.');
+      location.reload();
+    }catch(err){ alert('No se pudo leer el archivo. Verifica que sea el archivo correcto (.json descargado desde aquí mismo).'); }
+  };
+  reader.readAsText(file);
+}
+
+const STORAGE_KEY = 'mpv_m7_tiempo_v1';
+function loadData(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; } }
+function saveData(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+let data = loadData();
+
+const momentos = [
+  { id:'siesta', label:'⭐ Siesta / nap time (tu bloque más valioso)', highlight:true },
+  { id:'manana', label:'Mañana temprano (antes que despierten)' },
+  { id:'noche', label:'Noche (después que duermen)' },
+  { id:'finde', label:'Fin de semana' }
+];
+const ventanasBody = document.getElementById('ventanasBody');
+momentos.forEach(m=>{
+  const tr = document.createElement('tr');
+  if(m.highlight) tr.className = 'highlight-row';
+  tr.innerHTML = `<td class="momento">${m.label}</td>
+    <td><input type="text" id="v_${m.id}_tiempo" placeholder="Ej: 20 min"></td>
+    <td><input type="text" id="v_${m.id}_tarea" placeholder="Ej: crear contenido"></td>`;
+  ventanasBody.appendChild(tr);
+});
+
+const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes'];
+const semanaBody = document.getElementById('semanaBody');
+dias.forEach((d,i)=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="dia">${d}</td>
+    <td><input type="text" id="s_tarea${i}" placeholder="Tarea del día"></td>
+    <td style="text-align:center"><input type="checkbox" id="s_hecho${i}"></td>
+    <td><input type="text" id="s_notas${i}" placeholder="Resultado o nota"></td>`;
+  semanaBody.appendChild(tr);
+});
+
+// Load saved values
+const allIds = [];
+momentos.forEach(m=>{ allIds.push('v_'+m.id+'_tiempo', 'v_'+m.id+'_tarea'); });
+dias.forEach((_,i)=>{ allIds.push('s_tarea'+i, 's_notas'+i); });
+allIds.forEach(id=>{ const el = document.getElementById(id); if(el && data[id]) el.value = data[id]; });
+dias.forEach((_,i)=>{ const el = document.getElementById('s_hecho'+i); if(el) el.checked = !!data['s_hecho'+i]; });
+document.getElementById('regla80').value = data.regla80 || '';
+
+function recalc(){
+  allIds.forEach(id=>{ const el = document.getElementById(id); if(el) data[id] = el.value; });
+  dias.forEach((_,i)=>{ data['s_hecho'+i] = document.getElementById('s_hecho'+i).checked; });
+  data.regla80 = document.getElementById('regla80').value;
+  saveData(data);
+}
+
+document.addEventListener('input', recalc);
+document.addEventListener('change', recalc);
+recalc();
+</script>
+</body>
+</html>
