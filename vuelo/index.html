@@ -221,6 +221,7 @@ const m6 = getModule('mpv_m6_canvas_v1');
 const m7 = getModule('mpv_m7_tiempo_v1');
 const m8 = getModule('mpv_m8_checklist_v1');
 const m9 = getModule('mpv_m9_ventas_v1');
+const m10 = getModule('mpv_seguimiento_v1');
 
 // --- Completeness detection ---
 const modStatus = {
@@ -232,13 +233,13 @@ const modStatus = {
   M6: !!(m6 && m6.b1 && m6.b2 && m6.b3),
   M7: !!(m7 && (m7.v_siesta_tiempo || m7.v_manana_tiempo || m7.v_noche_tiempo || m7.v_finde_tiempo)),
   M8: !!(m8 && Object.keys(m8).some(k=>m8[k]===true)),
-  M9: !!(m9 && (m9.p_frase || Object.keys(m9).some(k=>k.startsWith('w_ventas') && num(m9[k])>0)))
+  M9: !!(m9 && (m9.p_frase || Object.keys(m9).some(k=>k.startsWith('w_ventas') && num(m9[k])>0))),
+  M10: !!(m10 && (Object.keys(m10.weeks||{}).length > 0 || Object.values(m10.escalate||{}).some(Boolean)))
 };
-const doneCount = Object.values(modStatus).filter(Boolean).length + (m9 ? 1 : 0); // M9+M10 count together loosely
 const totalMods = 10;
 const completedApprox = Object.values(modStatus).filter(Boolean).length;
-document.getElementById('overallFill').style.width = Math.round((completedApprox/9)*100) + '%';
-document.getElementById('overallLabel').textContent = completedApprox + ' / 9 módulos';
+document.getElementById('overallFill').style.width = Math.round((completedApprox/totalMods)*100) + '%';
+document.getElementById('overallLabel').textContent = completedApprox + ' / ' + totalMods + ' módulos';
 
 // --- Nav grid ---
 const navGrid = document.getElementById('navGrid');
@@ -252,7 +253,7 @@ const navItems = [
   {k:'M7', label:'Tiempo', done: modStatus.M7},
   {k:'M8', label:'Checklist', done: modStatus.M8},
   {k:'M9', label:'Ventas', done: modStatus.M9},
-  {k:'M10', label:'Seguimiento', done: !!m9}
+  {k:'M10', label:'Seguimiento', done: modStatus.M10}
 ];
 navItems.forEach(item=>{
   const chip = document.createElement('div');
