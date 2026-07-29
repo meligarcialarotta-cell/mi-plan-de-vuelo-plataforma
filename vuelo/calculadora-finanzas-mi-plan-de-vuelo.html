@@ -124,6 +124,29 @@
   .footbrand{ text-align:center; margin-top:24px; font-size:12.5px; color:var(--ink-soft); }
   .footbrand .strip{ height:5px; border-radius:4px; background:var(--olive); width:64px; margin:0 auto 10px; }
 
+  .hour-check{ margin-top:10px; padding:12px 14px; border-radius:12px; font-size:13px; line-height:1.5; display:none; }
+  .hour-check.show{ display:block; }
+  .hour-check.warn{ background: rgba(184,107,119,0.14); color:var(--rose-deep); }
+  .hour-check.ok{ background: rgba(124,139,90,0.12); color:var(--olive-deep); }
+
+  .tipo-selector{ display:flex; gap:12px; margin-bottom:22px; }
+  .tipo-card{ flex:1; padding:18px 12px; border-radius:14px; border:1.5px solid var(--line); background:#fff;
+    cursor:pointer; text-align:center; transition:.15s ease; }
+  .tipo-card:hover{ border-color:var(--lila-deep); }
+  .tipo-card.selected{ background: rgba(124,139,90,0.12); border-color:var(--olive); box-shadow:0 4px 14px -6px rgba(101,112,63,0.4); }
+  .tipo-card .temoji{ font-size:28px; }
+  .tipo-card .tlabel{ font-weight:700; font-size:13.5px; margin-top:8px; line-height:1.4; color:var(--ink); }
+
+  .paso2-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  @media (max-width:680px){ .paso2-grid{ grid-template-columns:1fr; } }
+  .paso2-col{ border-radius:16px; padding:18px 16px; border:1.5px solid var(--line); transition: opacity .2s ease, border-color .2s ease; }
+  .paso2-col.active{ border-color:var(--olive); background: rgba(124,139,90,0.06); }
+  .paso2-col.inactive{ opacity:0.4; }
+  .paso2-badge{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:5px 10px; border-radius:8px; margin-bottom:12px; }
+  .paso2-col.active .paso2-badge{ background:var(--olive); color:#fff; }
+  .paso2-col.inactive .paso2-badge{ background:var(--cream-deep); color:var(--ink-soft); }
+
   @media (max-width:480px){
     .card{ padding:22px 18px; }
     h1{ font-size:24px; }
@@ -153,7 +176,7 @@
 <div class="wrap">
 
   <header>
-    <p class="eyebrow">Bono exclusivo · Mi Plan de Vuelo</p>
+    <p class="eyebrow">Mi Plan de Vuelo</p>
     <h1>Tu Panel de Vuelo Financiero</h1>
     <p>Llena tus números y observa cómo todo se recalcula solo, para que sepas exactamente qué cobrar, cuánto te cuesta y cuánto necesitas vender.</p>
   </header>
@@ -161,7 +184,7 @@
   <!-- COSTOS FIJOS -->
   <div class="card">
     <h2>Costos fijos mensuales</h2>
-    <p class="sub">Lo que pagas siempre, vendas o no. Haz clic en cualquier nombre y cámbialo por el tuyo.</p>
+    <p class="sub">Lo que pagas siempre, cada mes, vendas o no. Si algún gasto no aplica a ti (por ejemplo, no pagas arriendo porque trabajas desde casa), déjalo en $0 — no necesitas borrar la fila. Haz clic en cualquier nombre para cambiarlo por el tuyo.</p>
     <div id="fixedList"></div>
     <div class="total-line"><span>Total costos fijos</span><span class="val" id="totalFixed">$0</span></div>
   </div>
@@ -169,7 +192,7 @@
   <!-- COSTOS VARIABLES -->
   <div class="card">
     <h2>Costos variables por unidad</h2>
-    <p class="sub">Lo que gastas por cada venta o unidad producida.</p>
+    <p class="sub">Lo que gastas por CADA venta o unidad (no por mes). Si vendes un producto digital sin envíos ni empaque, deja esas filas en $0.</p>
     <div id="variableList"></div>
     <div class="total-line"><span>Total costo variable / unidad</span><span class="val" id="totalVariable">$0</span></div>
   </div>
@@ -181,11 +204,13 @@
 
     <div class="field-block">
       <label>Precio de venta ($)</label>
-      <input type="number" id="precioVenta" value="0" min="0">
+      <input type="number" id="precioVenta" placeholder="Ej: 25000" min="0">
+      <p class="hint">Lo que le cobras a UNA clienta por 1 unidad, sesión o producto.</p>
     </div>
     <div class="field-block">
       <label>Meta de ingresos mensuales ($)</label>
-      <input type="number" id="metaIngresos" value="0" min="0">
+      <input type="number" id="metaIngresos" placeholder="Ej: 600000" min="0">
+      <p class="hint">Cuánto quieres GANAR en total ese mes — antes de restar tus costos.</p>
     </div>
 
     <div class="result-grid">
@@ -219,50 +244,71 @@
   <!-- CUANTO VALE TU HORA -->
   <div class="card">
     <h2>¿Cuánto vale tu hora y tu trabajo?</h2>
-    <p class="sub">Completa siempre el Paso 1. Luego usa el Paso 2A si vendes algo físico o un servicio, o el Paso 2B si vendes un producto digital.</p>
+    <p class="sub">Completa siempre el Paso 1. Luego elige tu tipo de negocio para que se resalte la sección que te corresponde.</p>
 
     <div class="stepline"><div class="dot"></div><div class="steptext">Paso 1 · Tu hora vale</div></div>
     <div class="field-block">
-      <label>¿Cuántas horas trabajas en tu negocio al mes?</label>
-      <input type="number" id="horasMes" value="0" min="0">
-      <p class="hint">Tu meta mensual ya está tomada arriba automáticamente.</p>
+      <label>¿Cuántas horas trabajas en tu negocio EN TOTAL AL MES?</label>
+      <input type="number" id="horasMes" placeholder="Ej: 40" min="0">
+      <p class="hint">⚠️ Es el total del MES completo, no por semana. Si trabajas 4 horas diarias, serían unas 120 horas al mes (4 × 30 días). Tu meta mensual ya está tomada arriba automáticamente.</p>
     </div>
     <div class="total-line"><span>Tu hora vale</span><span class="val" id="valorHora">$0</span></div>
+    <div class="hour-check" id="hourCheck"></div>
 
-    <div style="height:18px"></div>
-    <div class="stepline"><div class="dot"></div><div class="steptext">Paso 2A · Producto físico o servicio</div></div>
-    <p class="sub" style="margin-bottom:12px">Llena esto SOLO si vendes algo físico o un servicio. Si vendes un producto digital, sáltate esta sección y ve directo al Paso 2B.</p>
-    <div class="field-block">
-      <label>¿Cuántas horas tardas en producir 1 unidad o dar 1 sesión?</label>
-      <input type="number" id="horasUnidad" value="0" min="0">
-    </div>
-    <div class="result-grid">
-      <div class="result-box"><div class="rlabel">Costo de tu trabajo</div><div class="rvalue" id="rCostoTrabajo">$0</div></div>
-      <div class="result-box"><div class="rlabel">Costo total por unidad</div><div class="rvalue" id="rCostoTotalUnidad">$0</div></div>
-    </div>
-    <div class="total-line"><span>Precio sugerido (+50%)</span><span class="val" id="rPrecioSugeridoA">$0</span></div>
+    <div style="height:24px"></div>
+    <div class="stepline"><div class="dot"></div><div class="steptext">Paso 2 · Elige tu tipo de negocio</div></div>
+    <p class="sub" style="margin-bottom:14px">Elige UNA opción — la columna que te corresponde se resalta, y la otra se aclara para que sepas que no es para ti.</p>
 
-    <div style="height:18px"></div>
-    <div class="stepline"><div class="dot"></div><div class="steptext">Paso 2B · Producto digital</div></div>
-    <p class="sub" style="margin-bottom:12px">Llena esto SOLO si vendes un producto digital. Si vendes algo físico o un servicio, usa el Paso 2A de arriba en su lugar.</p>
-    <div class="field-block">
-      <label>¿Cuántas horas en total tardaste en crear el producto?</label>
-      <input type="number" id="horasCreacion" value="0" min="0">
+    <div class="tipo-selector">
+      <div class="tipo-card" id="tipoFisico" onclick="selectTipo('fisico')">
+        <div class="temoji">📦</div>
+        <div class="tlabel">Vendo algo físico<br>o un servicio</div>
+      </div>
+      <div class="tipo-card" id="tipoDigital" onclick="selectTipo('digital')">
+        <div class="temoji">💻</div>
+        <div class="tlabel">Vendo un producto<br>digital</div>
+      </div>
     </div>
-    <div class="field-block">
-      <label>¿Cuántas ventas proyectas hacer al mes?</label>
-      <input type="number" id="ventasProyectadas" value="0" min="0">
-      <p class="hint">Usa el mismo periodo que tu meta mensual de arriba — por ejemplo, si esperas 12 ventas al mes, escribe 12.</p>
+    <input type="hidden" id="tipoNegocio" value="">
+
+    <div class="paso2-grid">
+      <div class="paso2-col" id="colFisico">
+        <span class="paso2-badge">📦 Físico o servicio</span>
+        <div class="field-block">
+          <label>¿Cuántas horas tardas en producir 1 unidad o dar 1 sesión?</label>
+          <input type="number" id="horasUnidad" placeholder="Ej: 2 (horas)" min="0">
+        </div>
+        <div class="result-grid">
+          <div class="result-box"><div class="rlabel">Costo de tu trabajo</div><div class="rvalue" id="rCostoTrabajo">$0</div></div>
+          <div class="result-box"><div class="rlabel">Costo total por unidad</div><div class="rvalue" id="rCostoTotalUnidad">$0</div></div>
+        </div>
+        <div class="total-line"><span>Precio sugerido (+50%)</span><span class="val" id="rPrecioSugeridoA">$0</span></div>
+      </div>
+
+      <div class="paso2-col" id="colDigital">
+        <span class="paso2-badge">💻 Producto digital</span>
+        <p class="sub" style="margin:-4px 0 12px; font-size:12.5px;">💡 Aquí es normal que "tu hora" del Paso 1 parezca alta — se reparte entre tus ventas, no se cobra directo.</p>
+        <div class="field-block">
+          <label>¿Cuántas horas en total tardaste en crear el producto?</label>
+          <input type="number" id="horasCreacion" placeholder="Ej: 10 (una sola vez)" min="0">
+        </div>
+        <div class="field-block">
+          <label>¿Cuántas ventas proyectas hacer al mes?</label>
+          <input type="number" id="ventasProyectadas" placeholder="Ej: 12" min="0">
+          <p class="hint">Usa el mismo periodo que tu meta mensual de arriba.</p>
+        </div>
+        <div class="field-block">
+          <label>Costos de plataforma o herramientas por venta ($)</label>
+          <input type="number" id="costoPlataforma" placeholder="Ej: 2000 (o 0 si no aplica)" min="0">
+          <p class="hint">Ej: comisión de Hotmart, pasarela de pago — por cada venta, no al mes.</p>
+        </div>
+        <div class="result-grid">
+          <div class="result-box"><div class="rlabel">Costo de tiempo por venta</div><div class="rvalue" id="rCostoTiempoVenta">$0</div></div>
+          <div class="result-box"><div class="rlabel">Costo total por venta</div><div class="rvalue" id="rCostoTotalVenta">$0</div></div>
+        </div>
+        <div class="total-line"><span>Precio digital sugerido (+50%)</span><span class="val" id="rPrecioSugeridoB">$0</span></div>
+      </div>
     </div>
-    <div class="field-block">
-      <label>Costos de plataforma o herramientas por venta ($)</label>
-      <input type="number" id="costoPlataforma" value="0" min="0">
-    </div>
-    <div class="result-grid">
-      <div class="result-box"><div class="rlabel">Costo de tiempo por venta</div><div class="rvalue" id="rCostoTiempoVenta">$0</div></div>
-      <div class="result-box"><div class="rlabel">Costo total por venta</div><div class="rvalue" id="rCostoTotalVenta">$0</div></div>
-    </div>
-    <div class="total-line"><span>Precio digital sugerido (+50%)</span><span class="val" id="rPrecioSugeridoB">$0</span></div>
   </div>
 
   <!-- RESUMEN -->
@@ -354,29 +400,38 @@ function manualSave(){
 
 
 const fixedDefs = [
-  "Internet / datos móviles", "Servicios (agua, luz, gas, teléfono)", "Suscripción de herramientas",
+  "Arriendo / renta del espacio", "Servicios (agua, luz, gas, teléfono)", "Internet",
   "Herramienta o software", "Plataforma de ventas", "Publicidad mensual",
   "Costo fijo 7", "Costo fijo 8", "Costo fijo 9", "Costo fijo 10"
+];
+const fixedPlaceholders = [
+  "Ej: 300000 (o 0 si trabajas desde casa)", "Ej: 80000", "Ej: 60000",
+  "Ej: 40000", "Ej: 30000", "Ej: 50000",
+  "Monto mensual", "Monto mensual", "Monto mensual", "Monto mensual"
 ];
 const variableDefs = [
   "Materiales / insumos / ingredientes", "Empaque o embalaje", "Envío o transporte por unidad",
   "Comisión por venta", "Costo variable 5", "Costo variable 6", "Costo variable 7", "Costo variable 8"
 ];
+const variablePlaceholders = [
+  "Ej: 8000 (por cada unidad)", "Ej: 2000", "Ej: 5000 (o 0 si no envías nada)",
+  "Ej: 1500 (o 0 si no aplica)", "Monto por unidad", "Monto por unidad", "Monto por unidad", "Monto por unidad"
+];
 
-function buildRows(container, defs, prefix){
+function buildRows(container, defs, prefix, placeholders){
   const el = document.getElementById(container);
   defs.forEach((name, i)=>{
     const row = document.createElement('div');
     row.className = 'row';
     row.innerHTML = `
       <input type="text" id="${prefix}name${i}" value="${name}">
-      <input type="number" id="${prefix}val${i}" value="0" min="0">
+      <input type="number" id="${prefix}val${i}" placeholder="${placeholders[i]}" min="0">
     `;
     el.appendChild(row);
   });
 }
-buildRows('fixedList', fixedDefs, 'fx');
-buildRows('variableList', variableDefs, 'vr');
+buildRows('fixedList', fixedDefs, 'fx', fixedPlaceholders);
+buildRows('variableList', variableDefs, 'vr', variablePlaceholders);
 
 function num(id){ const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
 function money(v){ return '$' + Math.round(v).toLocaleString('es-CO'); }
@@ -385,7 +440,7 @@ const STORAGE_KEY = 'mpv_m5_finanzas_v1';
 const inputIds = [];
 fixedDefs.forEach((_,i)=>{ inputIds.push('fxname'+i, 'fxval'+i); });
 variableDefs.forEach((_,i)=>{ inputIds.push('vrname'+i, 'vrval'+i); });
-inputIds.push('precioVenta','metaIngresos','horasMes','horasUnidad','horasCreacion','ventasProyectadas','costoPlataforma');
+inputIds.push('precioVenta','metaIngresos','horasMes','horasUnidad','horasCreacion','ventasProyectadas','costoPlataforma','tipoNegocio');
 
 function loadSaved(){
   let saved = {};
@@ -404,6 +459,28 @@ function persistAll(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
 }
 loadSaved();
+
+function selectTipo(tipo){
+  document.getElementById('tipoNegocio').value = tipo;
+  applyTipoUI(tipo);
+  persistAll();
+}
+
+function applyTipoUI(tipo){
+  const tarjFisico = document.getElementById('tipoFisico');
+  const tarjDigital = document.getElementById('tipoDigital');
+  const colFisico = document.getElementById('colFisico');
+  const colDigital = document.getElementById('colDigital');
+  tarjFisico.classList.toggle('selected', tipo === 'fisico');
+  tarjDigital.classList.toggle('selected', tipo === 'digital');
+  colFisico.classList.toggle('active', tipo === 'fisico');
+  colFisico.classList.toggle('inactive', tipo === 'digital');
+  colDigital.classList.toggle('active', tipo === 'digital');
+  colDigital.classList.toggle('inactive', tipo === 'fisico');
+}
+// Restore saved business-type selection (if any)
+const tipoGuardado = document.getElementById('tipoNegocio').value;
+if(tipoGuardado){ applyTipoUI(tipoGuardado); }
 
 function recalc(){
   persistAll();
@@ -475,6 +552,27 @@ function recalc(){
   const horasMes = num('horasMes');
   const valorHora = (metaIngresos>0 && horasMes>0) ? metaIngresos/horasMes : 0;
   document.getElementById('valorHora').textContent = money(valorHora);
+
+  // Alerta de realismo: ¿cuántas horas al día implica esto?
+  const hourCheck = document.getElementById('hourCheck');
+  const tipoActual = document.getElementById('tipoNegocio').value;
+  if(horasMes > 0){
+    const horasPorDia = horasMes / 30;
+    if(horasPorDia < 1.5){
+      hourCheck.className = 'hour-check show warn';
+      if(tipoActual === 'digital'){
+        hourCheck.innerHTML = `⚠️ ${horasMes} horas al mes equivalen a solo ~${horasPorDia.toFixed(1)} horas al día. Este valor de tu hora es solo para el cálculo del Paso 2B (se reparte entre tus ventas, no se cobra directo) — pero si en realidad le dedicas más tiempo a tu negocio, corrige el número de arriba para que el resultado del Paso 2B sea más preciso.`;
+      } else {
+        hourCheck.innerHTML = `⚠️ ${horasMes} horas al mes equivalen a solo ~${horasPorDia.toFixed(1)} horas al día. Si en realidad le dedicas más tiempo a tu negocio, corrige el número de arriba — así el valor de tu hora será más realista.`;
+      }
+    } else {
+      hourCheck.className = 'hour-check show ok';
+      hourCheck.innerHTML = `✓ Eso equivale a unas ${horasPorDia.toFixed(1)} horas al día — revisa si coincide con tu realidad.`;
+    }
+  } else {
+    hourCheck.className = 'hour-check';
+    hourCheck.innerHTML = '';
+  }
 
   // Paso 2A
   const horasUnidad = num('horasUnidad');
